@@ -5,4 +5,4 @@ gui.canvas = gui.create_canvas()
 
 gui.canvas.create_rectangle(50, 20, 150, 80, fill="green")
 
-input("Press a key to exit...")
+input("Press ENTER to exit...")
