@@ -22,12 +22,13 @@ def create_window(**kwargs):
     window.title(kwargs.get('title', ""))
     window.minsize(kwargs.get('width', 300 * scale.value), kwargs.get('height', 300 * scale.value))
     window.maxsize(kwargs.get('width', 300 * scale.value), kwargs.get('height', 300 * scale.value))
+    window.protocol("WM_DELETE_WINDOW", on_close)
     return window
 
 # Create the canvas to draw on and add it to the window
 def create_canvas():
     if (window != None):
-        w, h = window.size()
+        w, h = window.winfo_reqwidth(), window.winfo_reqheight()
         canvas = Canvas(window, width=w, height=h)
         canvas.pack()
         return canvas
@@ -35,8 +36,7 @@ def create_canvas():
         exit("ERROR: cannot create canvas because window has not been created.")
         return None
 
-
-window = create_window(title="Tetris", width=300, height=500)
-canvas = create_canvas()
-
-input("Press a key to exit...")
+# Exit the program if the close button is clicked.
+# This is just the behavior.
+def on_close():
+    exit()
