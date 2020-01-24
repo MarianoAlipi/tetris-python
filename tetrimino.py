@@ -45,9 +45,9 @@ class Tetrimino:
         elif type == cls.Type.T:
             return 1, 0
         elif type == cls.Type.J:
-            return 0, 1
+            return 1, 0
         elif type == cls.Type.L:
-            return 0, 1
+            return 1, 0
         elif type == cls.Type.S:
             return 1, 1
         elif type == cls.Type.Z:
