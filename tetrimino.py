@@ -25,33 +25,32 @@ class Tetrimino:
     def __init__(self, type=None, x=-1, y=-1):
         self._type = type
         self.img = "assets/tetriminos/" + type.value + ".png"
-        self._rotation = 0
         # Which block is the anchor block (respect to the tetrimino's image).
         # Starts at 0.
-        anchorBlockX, anchorBlockY = self._determineAnchorBlock(type)
+        anchorBlockX, anchorBlockY, self._rotation = self._determineAnchorBlockAndRotation(type)
         self._anchor_block = {'x': anchorBlockX, 'y': anchorBlockY}
         # The position of the anchor block (independent of rotation) in the field
         # Check which is the anchor block for every type
         self._anchor_pos = {'x': x, 'y': y}
 
     @classmethod
-    def _determineAnchorBlock(cls, type):
+    def _determineAnchorBlockAndRotation(cls, type):
         if type == None:
-            return -1, -1
+            return -1, -1, 0
         elif type == cls.Type.I:
-            return 0, 1
+            return 0, 1, 90
         elif type == cls.Type.O: # Type.O is a special case. It can't be rotated.
-            return 0, 0
+            return 0, 0, 0
         elif type == cls.Type.T:
-            return 1, 0
+            return 1, 0, 0
         elif type == cls.Type.J:
-            return 1, 0
+            return 1, 0, 0
         elif type == cls.Type.L:
-            return 1, 0
+            return 1, 0, 0
         elif type == cls.Type.S:
-            return 1, 1
+            return 1, 1, -90
         elif type == cls.Type.Z:
-            return 1, 1
+            return 1, 1, 0
 
     @property
     def type(self):

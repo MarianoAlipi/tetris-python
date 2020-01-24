@@ -47,7 +47,7 @@ class Game(Arcade.Window):
         self.player = Arcade.Sprite(filename=self.tetr.img)
         self.player.center_x = 150
         self.player.center_y = 450
-        self.player.angle = 0
+        self.player.angle = self.tetr.rotation
 
         self.player_list = Arcade.SpriteList()
         self.player_list.append(self.player)
