@@ -4,10 +4,17 @@ import tetrimino
 SCREEN_WIDTH = 300
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Tetris"
+
 TOP_Y = SCREEN_HEIGHT
 BOTTOM_Y = 0
 LEFT_X = 0
 RIGHT_X = SCREEN_WIDTH
+
+BLOCK_SIZE = 22
+AREA_LEFT = 10
+AREA_RIGHT = AREA_LEFT + BLOCK_SIZE * 10
+AREA_BOTTOM = 10
+AREA_TOP = AREA_BOTTOM + BLOCK_SIZE * 20 
 
 UP_KEYS = [Arcade.key.UP, Arcade.key.W]
 DOWN_KEYS = [Arcade.key.DOWN, Arcade.key.S]
@@ -45,15 +52,17 @@ class Game(Arcade.Window):
     def setup(self):
         self.tetr = tetrimino.Tetrimino(tetrimino.Tetrimino.Type.S, 4, 0)
         self.player = Arcade.Sprite(filename=self.tetr.img)
-        self.player.center_x = 150
-        self.player.center_y = 450
+        # TODO:
+        # change this! (offset by half BLOCK_SIZE may not be final)
+        self.player.center_x = AREA_LEFT + self.tetr.anchor_pos['x'] * BLOCK_SIZE + BLOCK_SIZE / 2
+        self.player.center_y = AREA_TOP - self.tetr.anchor_pos['y'] * BLOCK_SIZE - BLOCK_SIZE
         self.player.angle = self.tetr.rotation
 
         self.player_list = Arcade.SpriteList()
         self.player_list.append(self.player)
 
         # Game area
-        self.game_area = Arcade.create_rectangle_outline(130, 250, 240, 480, Arcade.color.WHITE)
+        self.game_area = Arcade.create_rectangle_outline(AREA_LEFT + (AREA_RIGHT - AREA_LEFT) / 2, AREA_BOTTOM + (AREA_TOP - AREA_BOTTOM) / 2, AREA_RIGHT - AREA_LEFT, AREA_TOP - AREA_BOTTOM, Arcade.color.WHITE)
 
     """ Tick """
     def update(self, delta_time):
@@ -70,9 +79,15 @@ class Game(Arcade.Window):
             self.player.change_y = 0
 
         if self.left_pressed and not self.right_pressed:
-            self.player.change_x = -4
+            # TODO:
+            # do this check with anchor_pos
+            if self.player.center_x - self.player.width / 2 >= AREA_LEFT:
+                self.player.change_x = -1 * BLOCK_SIZE
+            self.left_pressed = False
         elif self.right_pressed and not self.left_pressed:
-            self.player.change_x = 4
+            if self.player.center_x + self.player.width / 2 <= AREA_RIGHT:
+                self.player.change_x = BLOCK_SIZE
+            self.right_pressed = False
         else:
             self.player.change_x = 0
 
