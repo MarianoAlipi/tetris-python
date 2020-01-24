@@ -2,6 +2,8 @@ from enum import Enum
 
 class Tetrimino:
 
+    # The I Tetrimino occupies columns 4, 5, 6 and 7, the O Tetrimino occupies columns 5 and 6, and the remaining 5 Tetriminos occupy columns 4, 5 and 6.
+
     # Type of tetrimino
     class Type(Enum):
         I = 'I'
