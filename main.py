@@ -15,6 +15,7 @@ class Game(Arcade.Window):
     
         self.player = None
         self.player_list = None
+        self.delta = 0
 
         Arcade.set_background_color(Arcade.color.WHITE)
 
@@ -36,7 +37,11 @@ class Game(Arcade.Window):
 
     """ Tick """
     def update(self, delta_time):
-        pass
+        # Normalized delta time
+        self.delta = delta_time * 60
+
+        # Make player rotate (testing)
+        # self.player.angle -= 360.0 / 120.0 * self.delta
 
 def main():
     game = Game(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
