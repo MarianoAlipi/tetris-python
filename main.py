@@ -43,7 +43,7 @@ class Game(Arcade.Window):
 
     """ Setup """
     def setup(self):
-        self.tetr = tetrimino.Tetrimino(tetrimino.Tetrimino.Type.S, 0, 4)
+        self.tetr = tetrimino.Tetrimino(tetrimino.Tetrimino.Type.S, 4, 0)
         self.player = Arcade.Sprite(filename=self.tetr.img)
         self.player.center_x = 150
         self.player.center_y = 450
@@ -51,6 +51,9 @@ class Game(Arcade.Window):
 
         self.player_list = Arcade.SpriteList()
         self.player_list.append(self.player)
+
+        # Game area
+        self.game_area = Arcade.create_rectangle_outline(130, 250, 240, 480, Arcade.color.WHITE)
 
     """ Tick """
     def update(self, delta_time):
@@ -86,6 +89,9 @@ class Game(Arcade.Window):
         Arcade.start_render()
         self.player_list.draw()
         self.player_list.draw()
+
+        # Game area
+        self.game_area.draw()
 
     """ =================== """
     """ || Input manager || """
