@@ -23,9 +23,6 @@ class Tetrimino:
     def __init__(self, type=None, x=-1, y=-1):
         self._type = type
         self.img = "assets/tetriminos/" + type.value + ".png"
-        # Which block is the anchor block (respect to the tetrimino's image).
-        # Starts at 0.
-        self._rotation = self._determineInitialRotation(type)
         # The relative position of each dependent block to the anchor block.
         self._dependentBlocksPos = self._determineDependentBlocks(type)
         # The position of the anchor block (independent of rotation) in the field
@@ -38,6 +35,8 @@ class Tetrimino:
             new_block.anchor_x = self._anchor_pos['x'] + self._dependentBlocksPos[i][0]
             new_block.anchor_y = self._anchor_pos['y'] + self._dependentBlocksPos[i][1]
             self._dependentBlocks.append(new_block)
+        # Initial rotation
+        self.rotate(self._determineInitialRotation(type))
 
     @classmethod
     def _determineInitialRotation(cls, type):
@@ -125,7 +124,31 @@ class Tetrimino:
                 self._dependentBlocks[i].update_position()
         # Right
         elif degrees == 90:
-            pass
+            for i in range(len(self._dependentBlocks)):
+                pair = self._dependentBlocksPos[i]
+                if pair[0] > 0:
+                    if pair[1] < 0:
+                        pair = [pair[0], -1 * pair[1]]
+                    elif pair[1] > 0:
+                        pair = [-1 * pair[0], pair[1]]
+                    else: # pair[1] == 0
+                        pair = [0, pair[0]]
+                elif pair[0] < 0:
+                    if pair[1] < 0:
+                        pair = [-1 * pair[0], pair[1]]
+                    elif pair[1] > 0:
+                        pair = [pair[0], -1 * pair[1]]
+                    else: # pair[1] == 0
+                        pair = [0, pair[0]]
+                else: # pair[0] == 0
+                    if pair[1] < 0:
+                        pair = [-1 * pair[1], 0]
+                    elif pair[1] > 0:
+                        pair = [-1 * pair[1], 0]
+                self._dependentBlocksPos[i] = pair
+                self._dependentBlocks[i].anchor_x = self._anchor_pos['x'] + pair[0]
+                self._dependentBlocks[i].anchor_y = self._anchor_pos['y'] + pair[1]
+                self._dependentBlocks[i].update_position()
 
     # Move all the blocks.
     def move(self, x, y):

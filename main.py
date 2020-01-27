@@ -43,7 +43,7 @@ class Game(Arcade.Window):
         self.player_list = Arcade.SpriteList()
         self.blocks_list = Arcade.SpriteList()
 
-        self.tetr = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.Z, x=4, y=6)
+        self.tetr = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.S, x=4, y=6)
         self.player_list = self.tetr.to_sprite_list()
 
         # Game area (with grid)
