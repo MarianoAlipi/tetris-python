@@ -1,5 +1,5 @@
 import arcade as Arcade
-import tetrimino, tetrimino2, block
+import tetrimino, block
 
 SCREEN_WIDTH = 300
 SCREEN_HEIGHT = 600
@@ -61,8 +61,7 @@ class Game(Arcade.Window):
         self.player_list = Arcade.SpriteList()
         self.blocks_list = Arcade.SpriteList()
 
-        # self.tetr = tetrimino.Tetrimino(tetrimino.Tetrimino.Type.S, 4, 0)
-        self.tetr = tetrimino2.Tetrimino(tetrimino2.Tetrimino.Type.Z, 4, 6)
+        self.tetr = tetrimino.Tetrimino(tetrimino.Tetrimino.Type.Z, 4, 6)
         # self.player = Arcade.Sprite(filename=self.tetr.img)
         self.player_list = self.tetr.to_sprite_list()
         self.player = self.player_list[0]
