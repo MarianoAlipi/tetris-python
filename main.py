@@ -91,8 +91,10 @@ class Game(Arcade.Window):
 
         # Rotation
         if self.r_pressed:
-            self.tetr.rotate(-90)
-            self.player_list = self.tetr.to_sprite_list()
+            # Check it's not the O tetrimino (it can't rotate).
+            if self.player_list[0].type != tetrimino.Tetrimino.Type.O:
+                self.tetr.rotate(-90)
+                self.player_list = self.tetr.to_sprite_list()
             self.r_pressed = False
 
         # Show FPS
