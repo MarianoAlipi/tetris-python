@@ -177,8 +177,6 @@ class Tetrimino:
             sprites.append(new_block)
         
         return sprites
-        
-
 
     @property
     def type(self):

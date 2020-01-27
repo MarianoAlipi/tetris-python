@@ -35,7 +35,7 @@ class Game(Arcade.Window):
         self.space_pressed = False
         self.r_pressed = False
 
-
+        # Background color
         Arcade.set_background_color(Arcade.color.BLACK)
 
     """ Game setup """
@@ -72,6 +72,10 @@ class Game(Arcade.Window):
             pass
 
         # Horizontal movement
+        # TODO:
+        # check for the actual leftmost or rightmost block of the tetrimino.
+        # Maybe requires setting stuff in "field".
+
         # Left
         if self.left_pressed and not self.right_pressed:
             # If it can still move left...
