@@ -1,5 +1,5 @@
 import arcade as Arcade
-import tetrimino, block
+import tetrimino, tetrimino2, block
 
 SCREEN_WIDTH = 300
 SCREEN_HEIGHT = 600
@@ -15,7 +15,7 @@ BLOCK_SIZE = 22
 AREA_LEFT = 10
 AREA_RIGHT = AREA_LEFT + BLOCK_SIZE * 10
 AREA_BOTTOM = 10
-AREA_TOP = AREA_BOTTOM + BLOCK_SIZE * 20 
+AREA_TOP = AREA_BOTTOM + BLOCK_SIZE * 20
 
 # Valid key bindings.
 UP_KEYS = [Arcade.key.UP, Arcade.key.W]
@@ -61,18 +61,22 @@ class Game(Arcade.Window):
         self.player_list = Arcade.SpriteList()
         self.blocks_list = Arcade.SpriteList()
 
-        self.tetr = tetrimino.Tetrimino(tetrimino.Tetrimino.Type.S, 4, 0)
-        self.player = Arcade.Sprite(filename=self.tetr.img)
+        # self.tetr = tetrimino.Tetrimino(tetrimino.Tetrimino.Type.S, 4, 0)
+        self.tetr = tetrimino2.Tetrimino(tetrimino2.Tetrimino.Type.S, 4, 1)
+        # self.player = Arcade.Sprite(filename=self.tetr.img)
+        self.player_list = self.tetr.to_sprite_list()
+        self.player = self.player_list[0]
 
         # TODO:
         # change this! (offset by half BLOCK_SIZE may not be final)
+        """
         self.player.center_x = AREA_LEFT + self.tetr.anchor_pos['x'] * BLOCK_SIZE + BLOCK_SIZE / 2
         self.player.center_y = AREA_TOP - self.tetr.anchor_pos['y'] * BLOCK_SIZE - BLOCK_SIZE
         self.player.angle = self.tetr.rotation
 
 
         self.player_list.append(self.player)
-
+        """
         # Game area (with grid)
         self.game_area = Arcade.ShapeElementList()
         self.game_area.append(Arcade.create_rectangle_outline(AREA_LEFT + (AREA_RIGHT - AREA_LEFT) / 2, AREA_BOTTOM + (AREA_TOP - AREA_BOTTOM) / 2, AREA_RIGHT - AREA_LEFT, AREA_TOP - AREA_BOTTOM, Arcade.color.WHITE, 2))

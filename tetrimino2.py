@@ -1,7 +1,12 @@
 from enum import Enum
 import arcade as Arcade
 import block
-from main import BLOCK_SIZE, AREA_LEFT, AREA_TOP
+
+BLOCK_SIZE = 22
+# The limits of the playing area (where blocks appear).
+AREA_LEFT = 10
+AREA_BOTTOM = 10
+AREA_TOP = AREA_BOTTOM + BLOCK_SIZE * 20
 
 class Tetrimino:
 
@@ -53,43 +58,36 @@ class Tetrimino:
         if type == None:
             return []
         elif type == cls.Type.I:
-            return [
-                [0, -1],  # [ ]
-                          # [X]
-                [0,  1],  # [ ]
-                [0,  2]   # [ ]
-            ]
+                # [ ]
+                # [X]
+                # [ ]
+                # [ ]
+            return [ [0, -1], [0,  1], [0,  2] ]
         elif type == cls.Type.O: # Type.O is a special case. It can't be rotated.
-            return [
-                        [1, 0], # [X][ ]
-                [1, 0], [1, 1]  # [ ][ ]
-            ]
+                # [X][ ]
+                # [ ][ ]
+            return [ [1, 0], [0, 1], [1, 1] ]
         elif type == cls.Type.T:
-            return [
-                [-1, 0],        [1, 0],  #[ ][X][ ]
-                         [0, 1]          #   [ ]
-            ]
+                # [ ][X][ ]
+                #    [ ]
+            return [ [-1, 0], [1, 0], [0, 1] ]
         elif type == cls.Type.J:
-            return [
-                [-1, -1],                 # [ ]
-                [-1,  0],         [1, 0]  # [ ][X][ ]
-            ]
+                # [ ]
+                # [ ][X][ ]
+            return [ [-1, -1], [-1, 0], [1, 0] ]
         elif type == cls.Type.L:
-            return [
-                [-1, 0],         [1, 0]  # [ ][X][ ]
-                [-1, 1],                 # [ ]
-            ]
+                # [ ][X][ ]
+                # [ ]
+            return [ [-1, 0], [1, 0], [-1, 1] ]
         elif type == cls.Type.S:
-            return [
-                [-1, -1],          # [ ]
-                [-1,  0],          # [ ][X]
-                          [0, -1]  #    [ ]
-            ]
+                # [ ]
+                # [ ][X]
+                #    [ ]
+            return [ [-1, -1], [-1, 0], [0, 1] ]
         elif type == cls.Type.Z:
-            return [
-                [-1, -1], [0, -1],          # [ ][ ]
-                                   [1, 0]   #    [X][ ]
-            ]
+                # [ ][ ]
+                #    [X][ ]
+            return [ [-1, -1], [0, -1], [1, 0] ]
 
     # Rotate all the blocks.
     def rotate(self, degrees):
@@ -102,12 +100,11 @@ class Tetrimino:
             pass
 
     # Convert the whole tetrimino to a sprite list.
-    # anchor_x and anchor_y are the position on the grid.
     # [0] is ALWAYS the anchor block.
-    def to_sprite_list(self, anchor_x, anchor_y):
+    def to_sprite_list(self):
         sprites = Arcade.SpriteList()
         
-        sprites.append(block.Block(self.type, center_x=AREA_LEFT + anchor_x * BLOCK_SIZE, center_y=AREA_TOP - anchor_y * BLOCK_SIZE))
+        sprites.append(block.Block(self.type, center_x=AREA_LEFT + self._anchor_pos['x'] * BLOCK_SIZE + BLOCK_SIZE / 2, center_y=AREA_TOP - self._anchor_pos['y'] * BLOCK_SIZE - BLOCK_SIZE / 2))
 
         
         for i in range(len(self._dependentBlocks)):
@@ -144,12 +141,3 @@ class Tetrimino:
     def anchor_pos(self, x, y):
         self._anchor_pos['x'] = x
         self._anchor_pos['y'] = y
-
-    @property
-    def anchor_block(self):
-        return self._anchor_block
-
-    @anchor_block.setter
-    def anchor_block(self, x, y):
-        self._anchor_block['x'] = x
-        self._anchor_block['y'] = y
