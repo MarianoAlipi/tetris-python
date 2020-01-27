@@ -56,18 +56,20 @@ class Game(Arcade.Window):
 
         Arcade.set_background_color(Arcade.color.BLACK)
 
-    """ Setup """
+    """ Game setup """
     def setup(self):
+        self.player_list = Arcade.SpriteList()
+        self.blocks_list = Arcade.SpriteList()
+
         self.tetr = tetrimino.Tetrimino(tetrimino.Tetrimino.Type.S, 4, 0)
         self.player = Arcade.Sprite(filename=self.tetr.img)
+
         # TODO:
         # change this! (offset by half BLOCK_SIZE may not be final)
         self.player.center_x = AREA_LEFT + self.tetr.anchor_pos['x'] * BLOCK_SIZE + BLOCK_SIZE / 2
         self.player.center_y = AREA_TOP - self.tetr.anchor_pos['y'] * BLOCK_SIZE - BLOCK_SIZE
         self.player.angle = self.tetr.rotation
 
-        self.player_list = Arcade.SpriteList()
-        self.blocks_list = Arcade.SpriteList()
 
         self.player_list.append(self.player)
 
