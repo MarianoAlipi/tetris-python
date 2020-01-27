@@ -1,6 +1,7 @@
 # A single block of a tetrimino.
 
 import arcade as Arcade
+
 import tetrimino
 
 BLOCK_SIZE = 22

@@ -1,6 +1,9 @@
 import arcade as Arcade
-import tetrimino, block
+
+import block
 import constants as Const
+import tetrimino
+
 
 class Game(Arcade.Window):
     
@@ -100,9 +103,11 @@ class Game(Arcade.Window):
 
         # Game area (with grid)
         self.game_area.draw()
-        
 
+        # The current tetrimino
         self.player_list.draw()
+
+        # The blocks already placed
         self.blocks_list.draw()
 
 

@@ -1,7 +1,10 @@
 from enum import Enum
+
 import arcade as Arcade
-import constants as Const
+
 import block
+import constants as Const
+
 
 class Tetrimino:
 
