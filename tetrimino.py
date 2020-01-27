@@ -1,12 +1,7 @@
 from enum import Enum
 import arcade as Arcade
+import constants as Const
 import block
-
-BLOCK_SIZE = 22
-# The limits of the playing area (where blocks appear).
-AREA_LEFT = 10
-AREA_BOTTOM = 10
-AREA_TOP = AREA_BOTTOM + BLOCK_SIZE * 20
 
 class Tetrimino:
 
@@ -146,7 +141,7 @@ class Tetrimino:
     def to_sprite_list(self):
         sprites = Arcade.SpriteList()
         
-        sprites.append(block.Block(self.type, center_x=AREA_LEFT + self._anchor_pos['x'] * BLOCK_SIZE + BLOCK_SIZE / 2, center_y=AREA_TOP - self._anchor_pos['y'] * BLOCK_SIZE - BLOCK_SIZE / 2))
+        sprites.append(block.Block(self.type, center_x=Const.AREA_LEFT + self._anchor_pos['x'] * Const.BLOCK_SIZE + Const.BLOCK_SIZE / 2, center_y=Const.AREA_TOP - self._anchor_pos['y'] * Const.BLOCK_SIZE - Const.BLOCK_SIZE / 2))
         
         for i in range(len(self._dependentBlocks)):
             new_block = self._dependentBlocks[i]

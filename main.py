@@ -1,27 +1,6 @@
 import arcade as Arcade
 import tetrimino, block
-
-SCREEN_WIDTH = 300
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Tetris"
-
-TOP_Y = SCREEN_HEIGHT
-BOTTOM_Y = 0
-LEFT_X = 0
-RIGHT_X = SCREEN_WIDTH
-
-BLOCK_SIZE = 22
-# The limits of the playing area (where blocks appear).
-AREA_LEFT = 10
-AREA_RIGHT = AREA_LEFT + BLOCK_SIZE * 10
-AREA_BOTTOM = 10
-AREA_TOP = AREA_BOTTOM + BLOCK_SIZE * 20
-
-# Valid key bindings.
-UP_KEYS = [Arcade.key.UP, Arcade.key.W]
-DOWN_KEYS = [Arcade.key.DOWN, Arcade.key.S]
-LEFT_KEYS = [Arcade.key.LEFT, Arcade.key.A]
-RIGHT_KEYS = [Arcade.key.RIGHT, Arcade.key.D]
+import constants as Const
 
 class Game(Arcade.Window):
     
@@ -67,10 +46,10 @@ class Game(Arcade.Window):
         self.player = self.player_list[0]
 
         # TODO:
-        # change this! (offset by half BLOCK_SIZE may not be final)
+        # change this! (offset by half Const.BLOCK_SIZE may not be final)
         """
-        self.player.center_x = AREA_LEFT + self.tetr.anchor_pos['x'] * BLOCK_SIZE + BLOCK_SIZE / 2
-        self.player.center_y = AREA_TOP - self.tetr.anchor_pos['y'] * BLOCK_SIZE - BLOCK_SIZE
+        self.player.center_x = Const.AREA_LEFT + self.tetr.anchor_pos['x'] * Const.BLOCK_SIZE + Const.BLOCK_SIZE / 2
+        self.player.center_y = Const.AREA_TOP - self.tetr.anchor_pos['y'] * Const.BLOCK_SIZE - Const.BLOCK_SIZE
         self.player.angle = self.tetr.rotation
 
 
@@ -78,13 +57,13 @@ class Game(Arcade.Window):
         """
         # Game area (with grid)
         self.game_area = Arcade.ShapeElementList()
-        self.game_area.append(Arcade.create_rectangle_outline(AREA_LEFT + (AREA_RIGHT - AREA_LEFT) / 2, AREA_BOTTOM + (AREA_TOP - AREA_BOTTOM) / 2, AREA_RIGHT - AREA_LEFT, AREA_TOP - AREA_BOTTOM, Arcade.color.WHITE, 2))
+        self.game_area.append(Arcade.create_rectangle_outline(Const.AREA_LEFT + (Const.AREA_RIGHT - Const.AREA_LEFT) / 2, Const.AREA_BOTTOM + (Const.AREA_TOP - Const.AREA_BOTTOM) / 2, Const.AREA_RIGHT - Const.AREA_LEFT, Const.AREA_TOP - Const.AREA_BOTTOM, Arcade.color.WHITE, 2))
 
-        for x in range(AREA_LEFT + BLOCK_SIZE, AREA_RIGHT, BLOCK_SIZE):
-            self.game_area.append(Arcade.create_line(x, AREA_TOP, x, AREA_BOTTOM, (128, 128, 128, 128))) # Gray with 50% opacity
+        for x in range(Const.AREA_LEFT + Const.BLOCK_SIZE, Const.AREA_RIGHT, Const.BLOCK_SIZE):
+            self.game_area.append(Arcade.create_line(x, Const.AREA_TOP, x, Const.AREA_BOTTOM, (128, 128, 128, 128))) # Gray with 50% opacity
         
-        for y in range(AREA_BOTTOM + BLOCK_SIZE, AREA_TOP, BLOCK_SIZE):
-            self.game_area.append(Arcade.create_line(AREA_LEFT, y, AREA_RIGHT, y, (128, 128, 128, 128)))
+        for y in range(Const.AREA_BOTTOM + Const.BLOCK_SIZE, Const.AREA_TOP, Const.BLOCK_SIZE):
+            self.game_area.append(Arcade.create_line(Const.AREA_LEFT, y, Const.AREA_RIGHT, y, (128, 128, 128, 128)))
 
         self.block = block.Block(tetrimino.Tetrimino.Type.I, 0, 0)
         self.block.position = 100, 100
@@ -107,13 +86,13 @@ class Game(Arcade.Window):
         if self.left_pressed and not self.right_pressed:
             # TODO:
             # do this check with anchor_pos
-            if self.player.center_x - self.player.width / 2 >= AREA_LEFT:
+            if self.player.center_x - self.player.width / 2 >= Const.AREA_LEFT:
                 self.tetr.move(-1, 0)
                 self.player_list = self.tetr.to_sprite_list()
                 self.player = self.player_list[0]
             self.left_pressed = False
         elif self.right_pressed and not self.left_pressed:
-            if self.player.center_x + self.player.width / 2 <= AREA_RIGHT:
+            if self.player.center_x + self.player.width / 2 <= Const.AREA_RIGHT:
                 self.tetr.move(1, 0)
                 self.player_list = self.tetr.to_sprite_list()
                 self.player = self.player_list[0]
@@ -151,13 +130,13 @@ class Game(Arcade.Window):
     """ || Input manager || """
     """ =================== """
     def on_key_press(self, key, modifiers):
-        if key in UP_KEYS:
+        if key in Const.UP_KEYS:
             self.up_pressed = True
-        elif key in DOWN_KEYS:
+        elif key in Const.DOWN_KEYS:
             self.down_pressed = True
-        elif key in LEFT_KEYS:
+        elif key in Const.LEFT_KEYS:
             self.left_pressed = True
-        elif key in RIGHT_KEYS:
+        elif key in Const.RIGHT_KEYS:
             self.right_pressed = True
         elif key == Arcade.key.SPACE:
             self.space_pressed = True
@@ -165,13 +144,13 @@ class Game(Arcade.Window):
             self.r_pressed = True
 
     def on_key_release(self, key, modifiers):
-        if key in UP_KEYS:
+        if key in Const.UP_KEYS:
             self.up_pressed = False
-        elif key in DOWN_KEYS:
+        elif key in Const.DOWN_KEYS:
             self.down_pressed = False
-        elif key in LEFT_KEYS:
+        elif key in Const.LEFT_KEYS:
             self.left_pressed = False
-        elif key in RIGHT_KEYS:
+        elif key in Const.RIGHT_KEYS:
             self.right_pressed = False
         elif key == Arcade.key.SPACE:
             self.space_pressed = False
@@ -180,7 +159,7 @@ class Game(Arcade.Window):
 
 """ Main program """
 def main():
-    game = Game(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    game = Game(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT, Const.SCREEN_TITLE)
     game.setup()
     Arcade.run()
 
