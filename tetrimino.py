@@ -14,16 +14,6 @@ class Tetrimino:
         S = 'S'
         Z = 'Z'
 
-    # Paths to image for every type
-    class Img(Enum):
-        I = None
-        O = None
-        T = None
-        J = None
-        L = None
-        S = None
-        Z = None
-
     def __init__(self, type=None, x=-1, y=-1):
         self._type = type
         self.img = "assets/tetriminos/" + type.value + ".png"
