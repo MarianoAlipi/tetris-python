@@ -9,7 +9,7 @@ class Game(Arcade.Window):
         super().__init__(width, height, title)        
     
         # Player
-        self.player = None
+        # player_list is a Tetrimino object converted to sprite_list.
         self.player_list = None
 
         # Individual blocks (pieces of tetriminos) in the grid
@@ -40,21 +40,9 @@ class Game(Arcade.Window):
         self.player_list = Arcade.SpriteList()
         self.blocks_list = Arcade.SpriteList()
 
-        self.tetr = tetrimino.Tetrimino(tetrimino.Tetrimino.Type.Z, 4, 6)
-        # self.player = Arcade.Sprite(filename=self.tetr.img)
+        self.tetr = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.Z, x=4, y=6)
         self.player_list = self.tetr.to_sprite_list()
-        self.player = self.player_list[0]
 
-        # TODO:
-        # change this! (offset by half Const.BLOCK_SIZE may not be final)
-        """
-        self.player.center_x = Const.AREA_LEFT + self.tetr.anchor_pos['x'] * Const.BLOCK_SIZE + Const.BLOCK_SIZE / 2
-        self.player.center_y = Const.AREA_TOP - self.tetr.anchor_pos['y'] * Const.BLOCK_SIZE - Const.BLOCK_SIZE
-        self.player.angle = self.tetr.rotation
-
-
-        self.player_list.append(self.player)
-        """
         # Game area (with grid)
         self.game_area = Arcade.ShapeElementList()
         self.game_area.append(Arcade.create_rectangle_outline(Const.AREA_LEFT + (Const.AREA_RIGHT - Const.AREA_LEFT) / 2, Const.AREA_BOTTOM + (Const.AREA_TOP - Const.AREA_BOTTOM) / 2, Const.AREA_RIGHT - Const.AREA_LEFT, Const.AREA_TOP - Const.AREA_BOTTOM, Arcade.color.WHITE, 2))
@@ -65,51 +53,39 @@ class Game(Arcade.Window):
         for y in range(Const.AREA_BOTTOM + Const.BLOCK_SIZE, Const.AREA_TOP, Const.BLOCK_SIZE):
             self.game_area.append(Arcade.create_line(Const.AREA_LEFT, y, Const.AREA_RIGHT, y, (128, 128, 128, 128)))
 
-        self.block = block.Block(tetrimino.Tetrimino.Type.I, 0, 0)
-        self.block.position = 100, 100
-        self.blocks_list.append(self.block)
-
     """ Tick """
     def update(self, delta_time):
         # Normalized delta time
         self.delta = delta_time * 60
 
-        # Make player rotate (testing)
-        # self.player.angle -= 360.0 / 120.0 * self.delta
         if self.up_pressed and not self.down_pressed:
-            self.player.change_y = 4
+            #self.player.change_y = 4
+            pass
         elif self.down_pressed and not self.up_pressed:
-            self.player.change_y = -4
+            #self.player.change_y = -4
+            pass
         else:
-            self.player.change_y = 0
+            #self.player.change_y = 0
+            pass
 
         if self.left_pressed and not self.right_pressed:
-            # TODO:
-            # do this check with anchor_pos
-            if self.player.center_x - self.player.width / 2 >= Const.AREA_LEFT:
+            if self.player_list[0].anchor_x - 1 >= 0:
                 self.tetr.move(-1, 0)
                 self.player_list = self.tetr.to_sprite_list()
-                self.player = self.player_list[0]
             self.left_pressed = False
         elif self.right_pressed and not self.left_pressed:
-            if self.player.center_x + self.player.width / 2 <= Const.AREA_RIGHT:
+            if self.player_list[0].anchor_x + 1 < Const.NUM_COLS:
                 self.tetr.move(1, 0)
                 self.player_list = self.tetr.to_sprite_list()
-                self.player = self.player_list[0]
             self.right_pressed = False
         else:
-            self.player.change_x = 0
+            pass
 
         # Rotation
         if self.r_pressed:
-            self.player.angle -= 90
             self.tetr.rotate(-90)
             self.player_list = self.tetr.to_sprite_list()
-            self.player = self.player_list[0]
             self.r_pressed = False
-
-        self.player.center_x += self.player.change_x
-        self.player.center_y += self.player.change_y
 
         # Show FPS
         print(1.0 / self.delta * 60)

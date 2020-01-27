@@ -141,7 +141,7 @@ class Tetrimino:
     def to_sprite_list(self):
         sprites = Arcade.SpriteList()
         
-        sprites.append(block.Block(self.type, center_x=Const.AREA_LEFT + self._anchor_pos['x'] * Const.BLOCK_SIZE + Const.BLOCK_SIZE / 2, center_y=Const.AREA_TOP - self._anchor_pos['y'] * Const.BLOCK_SIZE - Const.BLOCK_SIZE / 2))
+        sprites.append(block.Block(self.type, anchor_x=self.anchor_pos['x'], anchor_y=self.anchor_pos['y'], center_x=Const.AREA_LEFT + self._anchor_pos['x'] * Const.BLOCK_SIZE + Const.BLOCK_SIZE / 2, center_y=Const.AREA_TOP - self._anchor_pos['y'] * Const.BLOCK_SIZE - Const.BLOCK_SIZE / 2))
         
         for i in range(len(self._dependentBlocks)):
             new_block = self._dependentBlocks[i]
