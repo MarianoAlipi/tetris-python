@@ -76,16 +76,14 @@ class Game(Arcade.Window):
         if self.left_pressed and not self.right_pressed:
             # If it can still move left...
             if self.player_list[0].anchor_x - 1 >= 0:
-                self.tetr.move(-1, 0)
-                self.player_list = self.tetr.to_sprite_list()
+                self.moveTetrimino(self.player_list, -1, 0)
             # Release (reset) key
             self.left_pressed = False
         # Right
         elif self.right_pressed and not self.left_pressed:
             # If it can still move right...
             if self.player_list[0].anchor_x + 1 < Const.NUM_COLS:
-                self.tetr.move(1, 0)
-                self.player_list = self.tetr.to_sprite_list()
+                self.moveTetrimino(self.player_list, 1, 0)
             # Release (reset) key
             self.right_pressed = False
 
@@ -93,8 +91,7 @@ class Game(Arcade.Window):
         if self.r_pressed:
             # Check it's not the O tetrimino (it can't rotate).
             if self.player_list[0].type != tetrimino.Tetrimino.Type.O:
-                self.tetr.rotate(-90)
-                self.player_list = self.tetr.to_sprite_list()
+                self.rotateTetrimino(self.player_list, -90)
             self.r_pressed = False
 
         # Show FPS
@@ -144,6 +141,85 @@ class Game(Arcade.Window):
             self.space_pressed = False
         elif key == Arcade.key.R:
             self.r_pressed = False
+
+    # Move a tetrimino (SpriteList).
+    def moveTetrimino(self, tetr, x=0, y=0):
+        for blk in tetr:
+            blk.anchor_x += x
+            blk.anchor_y += y
+            blk.update_position()
+
+    # Rotate a tetrimino (SpriteList).
+    def rotateTetrimino(self, tetr, degrees=0):
+        is_first = True
+        anchor_block = tetr[0]
+
+        # Left
+        if degrees == -90:
+            for blk in tetr:
+
+                if is_first:
+                    is_first = False
+                    continue
+
+                pair = [blk.anchor_x - anchor_block.anchor_x, blk.anchor_y - anchor_block.anchor_y]
+
+                if pair[0] > 0:
+                    if pair[1] < 0:
+                        pair = [-1 * pair[0], pair[1]]
+                    elif pair[1] > 0:
+                        pair = [pair[0], -1 * pair[1]]
+                    else: # pair[1] == 0
+                        pair = [0, -1 * pair[0]]
+                elif pair[0] < 0:
+                    if pair[1] < 0:
+                        pair = [pair[0], -1 * pair[1]]
+                    elif pair[1] > 0:
+                        pair = [-1 * pair[0], pair[1]]
+                    else: # pair[1] == 0
+                        pair = [0, -1 * pair[0]]
+                else: # pair[0] == 0
+                    if pair[1] < 0:
+                        pair = [pair[1], 0]
+                    elif pair[1] > 0:
+                        pair = [pair[1], 0]
+
+                blk.anchor_x = anchor_block.anchor_x + pair[0]
+                blk.anchor_y = anchor_block.anchor_y + pair[1]
+                blk.update_position()
+        # Right
+        elif degrees == 90:
+            for blk in tetr:
+
+                if is_first:
+                    is_first = False
+                    continue
+
+                pair = [blk.anchor_x - anchor_block.anchor_x, blk.anchor_y - anchor_block.anchor_y]
+
+                if pair[0] > 0:
+                    if pair[1] < 0:
+                        pair = [pair[0], -1 * pair[1]]
+                    elif pair[1] > 0:
+                        pair = [-1 * pair[0], pair[1]]
+                    else: # pair[1] == 0
+                        pair = [0, pair[0]]
+                elif pair[0] < 0:
+                    if pair[1] < 0:
+                        pair = [-1 * pair[0], pair[1]]
+                    elif pair[1] > 0:
+                        pair = [pair[0], -1 * pair[1]]
+                    else: # pair[1] == 0
+                        pair = [0, pair[0]]
+                else: # pair[0] == 0
+                    if pair[1] < 0:
+                        pair = [-1 * pair[1], 0]
+                    elif pair[1] > 0:
+                        pair = [-1 * pair[1], 0]
+                        
+                blk.anchor_x = anchor_block.anchor_x + pair[0]
+                blk.anchor_y = anchor_block.anchor_y + pair[1]
+                blk.update_position()
 
 """ Main program """
 def main():

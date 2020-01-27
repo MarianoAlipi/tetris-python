@@ -93,6 +93,7 @@ class Tetrimino:
                 #    [X][ ]
             return [ [-1, -1], [0, -1], [1, 0] ]
 
+    """ This method is unused because it was reimplemented in main.py to avoid creating a new object to be able to show it. """
     # Rotate all the blocks.
     def rotate(self, degrees):
         # Left
@@ -150,6 +151,7 @@ class Tetrimino:
                 self._dependentBlocks[i].anchor_y = self._anchor_pos['y'] + pair[1]
                 self._dependentBlocks[i].update_position()
 
+    """ This method is unused because it was reimplemented in main.py to avoid creating a new object to be able to show it. """
     # Move all the blocks.
     def move(self, x, y):
         self._anchor_pos['x'] += x
