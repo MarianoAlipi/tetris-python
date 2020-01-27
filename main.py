@@ -11,12 +11,15 @@ class Game(Arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)        
     
+        # Background color
+        Arcade.set_background_color(Arcade.color.BLACK)
+
         # Field
         self.field = [ [False for i in range(Const.NUM_COLS)] for j in range(Const.NUM_ROWS) ]
         
         # Player
-        # player_list is a Tetrimino object converted to sprite_list.
-        self.player_list = None
+        # tetrimino is a Tetrimino object converted to sprite_list.
+        self.tetrimino = None
 
         # Individual blocks (pieces of tetriminos) in the grid
         self.blocks_list = None
@@ -34,17 +37,18 @@ class Game(Arcade.Window):
         self.right_pressed = False
         self.space_pressed = False
         self.r_pressed = False
-
-        # Background color
-        Arcade.set_background_color(Arcade.color.BLACK)
+        
+        # Fall speed (move down by one block every # frames)
+        self.fall_every = 50
+        self.fall_counter = 0
 
     """ Game setup """
     def setup(self):
-        self.player_list = Arcade.SpriteList()
+        self.tetrimino = Arcade.SpriteList()
         self.blocks_list = Arcade.SpriteList()
 
         self.tetr = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.S, x=4, y=6)
-        self.player_list = self.tetr.to_sprite_list()
+        self.tetrimino = self.tetr.to_sprite_list()
 
         # Game area (with grid)
         self.game_area = Arcade.ShapeElementList()
@@ -79,24 +83,31 @@ class Game(Arcade.Window):
         # Left
         if self.left_pressed and not self.right_pressed:
             # If it can still move left...
-            if self.player_list[0].anchor_x - 1 >= 0:
-                self.moveTetrimino(self.player_list, -1, 0)
+            if self.tetrimino[0].anchor_x - 1 >= 0:
+                self.moveTetrimino(self.tetrimino, -1, 0)
             # Release (reset) key
             self.left_pressed = False
         # Right
         elif self.right_pressed and not self.left_pressed:
             # If it can still move right...
-            if self.player_list[0].anchor_x + 1 < Const.NUM_COLS:
-                self.moveTetrimino(self.player_list, 1, 0)
+            if self.tetrimino[0].anchor_x + 1 < Const.NUM_COLS:
+                self.moveTetrimino(self.tetrimino, 1, 0)
             # Release (reset) key
             self.right_pressed = False
 
         # Rotation
         if self.r_pressed:
             # Check it's not the O tetrimino (it can't rotate).
-            if self.player_list[0].type != tetrimino.Tetrimino.Type.O:
-                self.rotateTetrimino(self.player_list, -90)
+            if self.tetrimino[0].type != tetrimino.Tetrimino.Type.O:
+                self.rotateTetrimino(self.tetrimino, -90)
             self.r_pressed = False
+
+        # Gravity
+        if self.fall_counter >= self.fall_every:
+            self.moveTetrimino(self.tetrimino, 0, 1)
+            self.fall_counter = 0
+        else:
+            self.fall_counter += 1
 
         # Show FPS
         print(1.0 / self.delta * 60)
@@ -109,7 +120,7 @@ class Game(Arcade.Window):
         self.game_area.draw()
 
         # The current tetrimino
-        self.player_list.draw()
+        self.tetrimino.draw()
 
         # The blocks already placed
         self.blocks_list.draw()
