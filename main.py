@@ -30,8 +30,7 @@ class Game(Arcade.Window):
         self.r_pressed = False
 
         # Field
-        w, h = 10, 20
-        self.field = [ [False for i in range(w)] for j in range(h) ]
+        self.field = [ [False for i in range(Const.NUM_COLS)] for j in range(Const.NUM_ROWS) ]
 
         Arcade.set_background_color(Arcade.color.BLACK)
 
@@ -68,18 +67,23 @@ class Game(Arcade.Window):
             #self.player.change_y = 0
             pass
 
+        # Horizontal movement
+        # Left
         if self.left_pressed and not self.right_pressed:
+            # If it can still move left...
             if self.player_list[0].anchor_x - 1 >= 0:
                 self.tetr.move(-1, 0)
                 self.player_list = self.tetr.to_sprite_list()
+            # Release (reset) key
             self.left_pressed = False
+        # Right
         elif self.right_pressed and not self.left_pressed:
+            # If it can still move right...
             if self.player_list[0].anchor_x + 1 < Const.NUM_COLS:
                 self.tetr.move(1, 0)
                 self.player_list = self.tetr.to_sprite_list()
+            # Release (reset) key
             self.right_pressed = False
-        else:
-            pass
 
         # Rotation
         if self.r_pressed:
