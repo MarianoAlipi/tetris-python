@@ -11,6 +11,9 @@ class Game(Arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)        
     
+        # Field
+        self.field = [ [False for i in range(Const.NUM_COLS)] for j in range(Const.NUM_ROWS) ]
+        
         # Player
         # player_list is a Tetrimino object converted to sprite_list.
         self.player_list = None
@@ -32,8 +35,6 @@ class Game(Arcade.Window):
         self.space_pressed = False
         self.r_pressed = False
 
-        # Field
-        self.field = [ [False for i in range(Const.NUM_COLS)] for j in range(Const.NUM_ROWS) ]
 
         Arcade.set_background_color(Arcade.color.BLACK)
 
