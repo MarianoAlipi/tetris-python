@@ -29,10 +29,17 @@ class Tetrimino:
         # Starts at 0.
         self._rotation = self._determineInitialRotation(type)
         # The relative position of each dependent block to the anchor block.
-        self._dependentBlocks = self._determineDependentBlocks(type)
+        self._dependentBlocksPos = self._determineDependentBlocks(type)
         # The position of the anchor block (independent of rotation) in the field
         # Check which is the anchor block for every type
         self._anchor_pos = {'x': x, 'y': y}
+        # The dependent blocks (Block objects)
+        self._dependentBlocks = []
+        for i in range(len(self._dependentBlocksPos)):
+            new_block = block.Block(self.type)
+            new_block.anchor_x = self._anchor_pos['x'] + self._dependentBlocksPos[i][0]
+            new_block.anchor_y = self._anchor_pos['y'] + self._dependentBlocksPos[i][1]
+            self._dependentBlocks.append(new_block)
 
     @classmethod
     def _determineInitialRotation(cls, type):
@@ -93,8 +100,31 @@ class Tetrimino:
     def rotate(self, degrees):
         # Left
         if degrees == -90:
-            pass
-
+            for i in range(len(self._dependentBlocks)):
+                pair = self._dependentBlocksPos[i]
+                if pair[0] > 0:
+                    if pair[1] < 0:
+                        pair = [-1 * pair[0], pair[1]]
+                    elif pair[1] > 0:
+                        pair = [pair[0], -1 * pair[1]]
+                    else: # pair[1] == 0
+                        pair = [0, -1 * pair[0]]
+                elif pair[0] < 0:
+                    if pair[1] < 0:
+                        pair = [pair[0], -1 * pair[1]]
+                    elif pair[1] > 0:
+                        pair = [-1 * pair[0], pair[1]]
+                    else: # pair[1] == 0
+                        pair = [0, -1 * pair[0]]
+                else: # pair[0] == 0
+                    if pair[1] < 0:
+                        pair = [pair[1], 0]
+                    elif pair[1] > 0:
+                        pair = [pair[1], 0]
+                self._dependentBlocksPos[i] = pair
+                self._dependentBlocks[i].anchor_x = self._anchor_pos['x'] + pair[0]
+                self._dependentBlocks[i].anchor_y = self._anchor_pos['y'] + pair[1]
+                self._dependentBlocks[i].update_position()
         # Right
         elif degrees == 90:
             pass
@@ -105,12 +135,10 @@ class Tetrimino:
         sprites = Arcade.SpriteList()
         
         sprites.append(block.Block(self.type, center_x=AREA_LEFT + self._anchor_pos['x'] * BLOCK_SIZE + BLOCK_SIZE / 2, center_y=AREA_TOP - self._anchor_pos['y'] * BLOCK_SIZE - BLOCK_SIZE / 2))
-
         
         for i in range(len(self._dependentBlocks)):
-            new_block = block.Block(self.type)
-            new_block.center_x = sprites[0].center_x + BLOCK_SIZE * self._dependentBlocks[i][0]
-            new_block.center_y = sprites[0].center_y - BLOCK_SIZE * self._dependentBlocks[i][1]
+            new_block = self._dependentBlocks[i]
+            new_block.update_position()
             sprites.append(new_block)
         
         return sprites

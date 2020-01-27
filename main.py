@@ -62,7 +62,7 @@ class Game(Arcade.Window):
         self.blocks_list = Arcade.SpriteList()
 
         # self.tetr = tetrimino.Tetrimino(tetrimino.Tetrimino.Type.S, 4, 0)
-        self.tetr = tetrimino2.Tetrimino(tetrimino2.Tetrimino.Type.S, 4, 1)
+        self.tetr = tetrimino2.Tetrimino(tetrimino2.Tetrimino.Type.Z, 4, 6)
         # self.player = Arcade.Sprite(filename=self.tetr.img)
         self.player_list = self.tetr.to_sprite_list()
         self.player = self.player_list[0]
@@ -121,6 +121,9 @@ class Game(Arcade.Window):
         # Rotation
         if self.r_pressed:
             self.player.angle -= 90
+            self.tetr.rotate(-90)
+            self.player_list = self.tetr.to_sprite_list()
+            self.player = self.player_list[0]
             self.r_pressed = False
 
         self.player.center_x += self.player.change_x
