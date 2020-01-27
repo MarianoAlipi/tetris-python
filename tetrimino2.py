@@ -129,6 +129,18 @@ class Tetrimino:
         elif degrees == 90:
             pass
 
+    # Move all the blocks.
+    def move(self, x, y):
+        self._anchor_pos['x'] += x
+        self._anchor_pos['y'] += y
+
+        for i in range(len(self._dependentBlocks)):
+            new_block = self._dependentBlocks[i]
+            new_block.anchor_x += x
+            new_block.anchor_y += y
+            self._dependentBlocks[i] = new_block
+            self._dependentBlocks[i].update_position()
+
     # Convert the whole tetrimino to a sprite list.
     # [0] is ALWAYS the anchor block.
     def to_sprite_list(self):

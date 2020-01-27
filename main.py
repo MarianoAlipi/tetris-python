@@ -109,11 +109,15 @@ class Game(Arcade.Window):
             # TODO:
             # do this check with anchor_pos
             if self.player.center_x - self.player.width / 2 >= AREA_LEFT:
-                self.player.change_x = -1 * BLOCK_SIZE
+                self.tetr.move(-1, 0)
+                self.player_list = self.tetr.to_sprite_list()
+                self.player = self.player_list[0]
             self.left_pressed = False
         elif self.right_pressed and not self.left_pressed:
             if self.player.center_x + self.player.width / 2 <= AREA_RIGHT:
-                self.player.change_x = BLOCK_SIZE
+                self.tetr.move(1, 0)
+                self.player_list = self.tetr.to_sprite_list()
+                self.player = self.player_list[0]
             self.right_pressed = False
         else:
             self.player.change_x = 0
