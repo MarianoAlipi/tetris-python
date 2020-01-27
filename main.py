@@ -1,5 +1,5 @@
 import arcade as Arcade
-import tetrimino
+import tetrimino, block
 
 SCREEN_WIDTH = 300
 SCREEN_HEIGHT = 600
@@ -11,11 +11,13 @@ LEFT_X = 0
 RIGHT_X = SCREEN_WIDTH
 
 BLOCK_SIZE = 22
+# The limits of the playing area (where blocks appear).
 AREA_LEFT = 10
 AREA_RIGHT = AREA_LEFT + BLOCK_SIZE * 10
 AREA_BOTTOM = 10
 AREA_TOP = AREA_BOTTOM + BLOCK_SIZE * 20 
 
+# Valid key bindings.
 UP_KEYS = [Arcade.key.UP, Arcade.key.W]
 DOWN_KEYS = [Arcade.key.DOWN, Arcade.key.S]
 LEFT_KEYS = [Arcade.key.LEFT, Arcade.key.A]
@@ -30,6 +32,12 @@ class Game(Arcade.Window):
         # Player
         self.player = None
         self.player_list = None
+
+        # Individual blocks (pieces of tetriminos) in the grid
+        self.blocks_list = None
+        
+        # Game area (with grid)
+        self.game_area = None
 
         # Normalized delta time
         self.delta = 0
@@ -59,10 +67,23 @@ class Game(Arcade.Window):
         self.player.angle = self.tetr.rotation
 
         self.player_list = Arcade.SpriteList()
+        self.blocks_list = Arcade.SpriteList()
+
         self.player_list.append(self.player)
 
-        # Game area
-        self.game_area = Arcade.create_rectangle_outline(AREA_LEFT + (AREA_RIGHT - AREA_LEFT) / 2, AREA_BOTTOM + (AREA_TOP - AREA_BOTTOM) / 2, AREA_RIGHT - AREA_LEFT, AREA_TOP - AREA_BOTTOM, Arcade.color.WHITE)
+        # Game area (with grid)
+        self.game_area = Arcade.ShapeElementList()
+        self.game_area.append(Arcade.create_rectangle_outline(AREA_LEFT + (AREA_RIGHT - AREA_LEFT) / 2, AREA_BOTTOM + (AREA_TOP - AREA_BOTTOM) / 2, AREA_RIGHT - AREA_LEFT, AREA_TOP - AREA_BOTTOM, Arcade.color.WHITE, 2))
+
+        for x in range(AREA_LEFT + BLOCK_SIZE, AREA_RIGHT, BLOCK_SIZE):
+            self.game_area.append(Arcade.create_line(x, AREA_TOP, x, AREA_BOTTOM, (128, 128, 128, 128))) # Gray with 50% opacity
+        
+        for y in range(AREA_BOTTOM + BLOCK_SIZE, AREA_TOP, BLOCK_SIZE):
+            self.game_area.append(Arcade.create_line(AREA_LEFT, y, AREA_RIGHT, y, (128, 128, 128, 128)))
+
+        self.block = block.Block(tetrimino.Tetrimino.Type.I, 0, 0)
+        self.block.position = 100, 100
+        self.blocks_list.append(self.block)
 
     """ Tick """
     def update(self, delta_time):
@@ -99,14 +120,20 @@ class Game(Arcade.Window):
         self.player.center_x += self.player.change_x
         self.player.center_y += self.player.change_y
 
+        # Show FPS
+        print(1.0 / self.delta * 60)
+
     """ Render """
     def on_draw(self):
         Arcade.start_render()
-        self.player_list.draw()
-        self.player_list.draw()
 
-        # Game area
+        # Game area (with grid)
         self.game_area.draw()
+        
+
+        self.player_list.draw()
+        self.blocks_list.draw()
+
 
     """ =================== """
     """ || Input manager || """
