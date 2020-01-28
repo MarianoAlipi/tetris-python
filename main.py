@@ -165,7 +165,7 @@ class Game(Arcade.Window):
             return self.field[y][x] == False
         # It's outside the game area.
         else:
-            return
+            return False
 
     # Move a tetrimino (SpriteList).
     def move_tetrimino(self, tetr, x=0, y=0):
