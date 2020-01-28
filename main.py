@@ -39,7 +39,8 @@ class Game(Arcade.Window):
         self.r_pressed = False
         
         # Fall speed (move down by one block every # frames)
-        self.fall_every = 50
+        # Default: 50
+        self.fall_every = 10
         self.fall_counter = 0
 
     """ Game setup """
@@ -47,7 +48,7 @@ class Game(Arcade.Window):
         self.tetrimino = Arcade.SpriteList()
         self.blocks_list = Arcade.SpriteList()
 
-        self.tetr = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.S, x=4, y=6)
+        self.tetr = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.S)
         self.tetrimino = self.tetr.to_sprite_list()
 
         # Game area (with grid)

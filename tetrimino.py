@@ -26,8 +26,10 @@ class Tetrimino:
         # The relative position of each dependent block to the anchor block.
         self._dependentBlocksPos = self._determineDependentBlocks(type)
         # The position of the anchor block (independent of rotation) in the field
-        # Check which is the anchor block for every type
-        self._anchor_pos = {'x': x, 'y': y}
+        if x != -1 and y != -1:
+            self._anchor_pos = {'x': x, 'y': y}
+        else:
+            self._anchor_pos = {'x': 4, 'y': 1 if type == Tetrimino.Type.S or type == Tetrimino.Type.Z else 0}
         # The dependent blocks (Block objects)
         self._dependentBlocks = []
         for i in range(len(self._dependentBlocksPos)):
@@ -35,38 +37,14 @@ class Tetrimino:
             new_block.anchor_x = self._anchor_pos['x'] + self._dependentBlocksPos[i][0]
             new_block.anchor_y = self._anchor_pos['y'] + self._dependentBlocksPos[i][1]
             self._dependentBlocks.append(new_block)
-        # Initial rotation
-        self.rotate(self._determineInitialRotation(type))
-
-    @classmethod
-    def _determineInitialRotation(cls, type):
-        if type == None:
-            return 0
-        elif type == cls.Type.I:
-            return 90
-        elif type == cls.Type.O: # Type.O is a special case. It can't be rotated.
-            return 0
-        elif type == cls.Type.T:
-            return 0
-        elif type == cls.Type.J:
-            return 0
-        elif type == cls.Type.L:
-            return 0
-        elif type == cls.Type.S:
-            return 90
-        elif type == cls.Type.Z:
-            return 0
 
     @classmethod
     def _determineDependentBlocks(cls, type):
         if type == None:
             return []
         elif type == cls.Type.I:
-                # [ ]
-                # [X]
-                # [ ]
-                # [ ]
-            return [ [0, -1], [0,  1], [0,  2] ]
+                # [ ][X][ ][ ]
+            return [ [-1, 0], [1, 0], [2, 0] ]
         elif type == cls.Type.O: # Type.O is a special case. It can't be rotated.
                 # [X][ ]
                 # [ ][ ]
@@ -76,18 +54,17 @@ class Tetrimino:
                 #    [ ]
             return [ [-1, 0], [1, 0], [0, 1] ]
         elif type == cls.Type.J:
-                # [ ]
                 # [ ][X][ ]
-            return [ [-1, -1], [-1, 0], [1, 0] ]
+                #       [ ]
+            return [ [-1, 0], [1, 0], [1, 1] ]
         elif type == cls.Type.L:
                 # [ ][X][ ]
                 # [ ]
             return [ [-1, 0], [1, 0], [-1, 1] ]
         elif type == cls.Type.S:
-                # [ ]
+                #    [ ][ ]
                 # [ ][X]
-                #    [ ]
-            return [ [-1, -1], [-1, 0], [0, 1] ]
+            return [ [0, -1], [1, -1], [-1, 0] ]
         elif type == cls.Type.Z:
                 # [ ][ ]
                 #    [X][ ]
