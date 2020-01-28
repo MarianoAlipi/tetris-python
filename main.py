@@ -7,7 +7,9 @@ import tetrimino
 
 class Game(Arcade.Window):
     
-    """ Init """
+    """ ========== """
+    """ || Init || """
+    """ ========== """
     def __init__(self, width, height, title):
         super().__init__(width, height, title)        
     
@@ -15,9 +17,9 @@ class Game(Arcade.Window):
         Arcade.set_background_color(Arcade.color.BLACK)
 
         # Field
-        self.field = [ [False for i in range(Const.NUM_COLS)] for j in range(Const.NUM_ROWS) ]
+        self.field = [ [None for i in range(Const.NUM_COLS)] for j in range(Const.NUM_ROWS) ]
         
-        # Player
+        # Player (the current tetrimino)
         # tetrimino is a Tetrimino object converted to sprite_list.
         self.tetrimino = None
 
@@ -43,13 +45,16 @@ class Game(Arcade.Window):
         self.fall_every = 10
         self.fall_counter = 0
 
-    """ Game setup """
+    """ ================ """
+    """ || Game setup || """
+    """ ================ """
     def setup(self):
+
         self.tetrimino = Arcade.SpriteList()
         self.blocks_list = Arcade.SpriteList()
 
-        self.tetr = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.S)
-        self.tetrimino = self.tetr.to_sprite_list()
+        self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.S).to_sprite_list()
+        # self.add_tetrimino_to_field(self.tetrimino)
 
         # Game area (with grid)
         self.game_area = Arcade.ShapeElementList()
@@ -60,8 +65,9 @@ class Game(Arcade.Window):
         
         for y in range(Const.AREA_BOTTOM + Const.BLOCK_SIZE, Const.AREA_TOP, Const.BLOCK_SIZE):
             self.game_area.append(Arcade.create_line(Const.AREA_LEFT, y, Const.AREA_RIGHT, y, (128, 128, 128, 128)))
-
-    """ Tick """
+    """ ========== """
+    """ || Tick || """
+    """ ========== """
     def update(self, delta_time):
         # Normalized delta time
         self.delta = delta_time * 60
@@ -76,11 +82,7 @@ class Game(Arcade.Window):
             #self.player.change_y = 0
             pass
 
-        # Horizontal movement
-        # TODO:
-        # check for the actual leftmost or rightmost block of the tetrimino.
-        # Maybe requires setting stuff in "field".
-
+        """ Horizontal movement """
         # Left
         if self.left_pressed and not self.right_pressed:
             # If it can still move left...
@@ -96,14 +98,14 @@ class Game(Arcade.Window):
             # Release (reset) key
             self.right_pressed = False
 
-        # Rotation
+        """ Rotation """
         if self.r_pressed:
             # Check it's not the O tetrimino (it can't rotate).
             if self.tetrimino[0].type != tetrimino.Tetrimino.Type.O:
                 self.rotate_tetrimino(self.tetrimino, -90)
             self.r_pressed = False
 
-        # Gravity
+        """ Gravity """
         if self.fall_counter >= self.fall_every:
             # Attempt to move down
             if self.move_tetrimino(self.tetrimino, 0, 1):
@@ -115,7 +117,7 @@ class Game(Arcade.Window):
                 for blk in self.tetrimino:
                     self.blocks_list.append(blk)
                 # Create new tetrimino.
-                self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.T, x=4, y=0).to_sprite_list()
+                self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.T).to_sprite_list()
             self.fall_counter = 0
         else:
             self.fall_counter += 1
@@ -123,7 +125,9 @@ class Game(Arcade.Window):
         # Show FPS
         print(1.0 / self.delta * 60)
 
-    """ Render """
+    """ ============ """
+    """ || Render ||"""
+    """ ============ """
     def on_draw(self):
         Arcade.start_render()
 
@@ -168,17 +172,29 @@ class Game(Arcade.Window):
         elif key == Arcade.key.R:
             self.r_pressed = False
 
-    """ Utils and tetrimino handling """
+    """ ================================== """
+    """ || Utils and tetrimino handling ||"""
+    """ ================================== """
+
+    """ Check a position in the field is valid and empty. """
     def check_valid_and_empty(self, x=-1, y=-1):
         # Check it's inside the game area.
         if x >= 0 and x < Const.NUM_COLS and y >= 0 and y < Const.NUM_ROWS:
             # Check there isn't already a block in the target position.
-            return self.field[y][x] == False
+            return self.field[y][x] == None
         # It's outside the game area.
         else:
             return False
 
-    # Move a tetrimino (SpriteList).
+    """ Add the tetrimino's blocks to the field matrix. """
+    def add_tetrimino_to_field(self, tetr):
+        for blk in tetr:
+            x = blk.anchor_x
+            y = blk.anchor_y
+
+            self.field[y][x] = blk
+
+    """ Move a tetrimino (SpriteList). """
     def move_tetrimino(self, tetr, x=0, y=0):
         # The target anchor positions of each block will be stored in these lists.
         # If every block can be moved, the blocks' new anchor_x and y will be
@@ -210,7 +226,7 @@ class Game(Arcade.Window):
         
         return True
 
-    # Rotate a tetrimino (SpriteList).
+    """ Rotate a tetrimino (SpriteList). """
     def rotate_tetrimino(self, tetr, degrees=0):
         is_first = True
         anchor_block = tetr[0]
@@ -334,7 +350,9 @@ class Game(Arcade.Window):
             return True
                 
 
-""" Main program """
+""" ================== """
+""" || Main program || """
+""" ================== """
 def main():
     game = Game(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT, Const.SCREEN_TITLE)
     game.setup()
