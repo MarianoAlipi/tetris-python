@@ -157,6 +157,16 @@ class Game(Arcade.Window):
         elif key == Arcade.key.R:
             self.r_pressed = False
 
+    """ Utils and tetrimino handling """
+    def check_valid_and_empty(self, x=-1, y=-1):
+        # Check it's inside the game area.
+        if x >= 0 and x < Const.NUM_COLS and y >= 0 and y < Const.NUM_ROWS:
+            # Check there isn't already a block in the target position.
+            return self.field[y][x] == False
+        # It's outside the game area.
+        else:
+            return
+
     # Move a tetrimino (SpriteList).
     def moveTetrimino(self, tetr, x=0, y=0):
         # Here, the target anchor positions of each block will be stored.
