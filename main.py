@@ -107,14 +107,15 @@ class Game(Arcade.Window):
             # Attempt to move down
             if self.move_tetrimino(self.tetrimino, 0, 1):
                 # Success
-                self.fall_counter = 0
+                pass
             else:
                 # Failure
                 # Convert tetrimino to blocks.
                 for blk in self.tetrimino:
                     self.blocks_list.append(blk)
                 # Create new tetrimino.
-                self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.T, x=4, y=1).to_sprite_list()
+                self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.T, x=4, y=0).to_sprite_list()
+            self.fall_counter = 0
         else:
             self.fall_counter += 1
 
