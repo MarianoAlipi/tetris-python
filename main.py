@@ -182,16 +182,10 @@ class Game(Arcade.Window):
             new_x = blk.anchor_x + x
             new_y = blk.anchor_y + y
 
-            # Check the move is inside the game area.
-            if new_x >= 0 and new_x < Const.NUM_COLS and new_y >= 0 and new_y < Const.NUM_ROWS:
-                # Check there isn't already a block in the target position.
-                if self.field[new_y][new_x] == False:
-                    backup_anchors_x.append(new_x)
-                    backup_anchors_y.append(new_y)
-                # One of the blocks cannot move. Exit the function.
-                else:
-                    return
-            # Trying to move outside the game area.
+            if self.check_valid_and_empty(new_x, new_y):
+                backup_anchors_x.append(new_x)
+                backup_anchors_y.append(new_y)
+            # One of the blocks cannot move. Exit the function.
             else:
                 return
 
