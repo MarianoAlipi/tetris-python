@@ -42,7 +42,7 @@ class Game(Arcade.Window):
         
         # Fall speed (move down by one block every # frames)
         # Default: 50
-        self.fall_every = 10
+        self.fall_every = 50
         self.fall_counter = 0
 
     """ ================ """
@@ -54,7 +54,7 @@ class Game(Arcade.Window):
         self.blocks_list = Arcade.SpriteList()
 
         self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.S).to_sprite_list()
-        # self.add_tetrimino_to_field(self.tetrimino)
+        self.add_tetrimino_to_field(self.tetrimino)
 
         # Game area (with grid)
         self.game_area = Arcade.ShapeElementList()
@@ -118,6 +118,7 @@ class Game(Arcade.Window):
                     self.blocks_list.append(blk)
                 # Create new tetrimino.
                 self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.T).to_sprite_list()
+                self.add_tetrimino_to_field(self.tetrimino)
             self.fall_counter = 0
         else:
             self.fall_counter += 1
@@ -176,12 +177,14 @@ class Game(Arcade.Window):
     """ || Utils and tetrimino handling ||"""
     """ ================================== """
 
-    """ Check a position in the field is valid and empty. """
-    def check_valid_and_empty(self, x=-1, y=-1):
+    """ Check a position in the field is valid and empty. 
+        tetr is the tetrimino to which the block belongs, in order to ignore it.
+    """
+    def check_valid_and_empty(self, x=-1, y=-1, tetr=[]):
         # Check it's inside the game area.
         if x >= 0 and x < Const.NUM_COLS and y >= 0 and y < Const.NUM_ROWS:
             # Check there isn't already a block in the target position.
-            return self.field[y][x] == None
+            return (self.field[y][x] == None) or (self.field[y][x] in tetr)
         # It's outside the game area.
         else:
             return False
@@ -209,7 +212,7 @@ class Game(Arcade.Window):
             new_x = blk.anchor_x + x
             new_y = blk.anchor_y + y
 
-            if self.check_valid_and_empty(new_x, new_y):
+            if self.check_valid_and_empty(new_x, new_y, tetr):
                 backup_anchors_x.append(new_x)
                 backup_anchors_y.append(new_y)
             # One of the blocks cannot move. Exit the function.
@@ -219,9 +222,15 @@ class Game(Arcade.Window):
         # All the blocks have been checked and they CAN move.
         i = 0
         for blk in tetr:
+            # Remove from field.
+            self.field[blk.anchor_y][blk.anchor_x] = None
+            # Update position values.
             blk.anchor_x = backup_anchors_x[i]
             blk.anchor_y = backup_anchors_y[i]
             blk.update_position()
+            # Add to field with new position.
+            self.field[blk.anchor_y][blk.anchor_x] = blk
+
             i += 1
         
         return True
@@ -270,7 +279,7 @@ class Game(Arcade.Window):
                 new_x = anchor_block.anchor_x + pair[0]
                 new_y = anchor_block.anchor_y + pair[1]
 
-                if self.check_valid_and_empty(new_x, new_y):
+                if self.check_valid_and_empty(new_x, new_y, tetr):
                     backup_anchors_x.append(new_x)
                     backup_anchors_y.append(new_y)
                 else:
@@ -326,7 +335,7 @@ class Game(Arcade.Window):
                 new_x = anchor_block.anchor_x + pair[0]
                 new_y = anchor_block.anchor_y + pair[1]
 
-                if self.check_valid_and_empty(new_x, new_y):
+                if self.check_valid_and_empty(new_x, new_y, tetr):
                     backup_anchors_x.append(new_x)
                     backup_anchors_y.append(new_y)
                 else:
@@ -341,9 +350,14 @@ class Game(Arcade.Window):
                     i += 1
                     continue
 
-                blk.anchor_x = backup_anchors_x[i - 1]
-                blk.anchor_y = backup_anchors_y[i - 1]
+                # Remove from field.
+                self.field[blk.anchor_y][blk.anchor_x] = None
+                # Update position values.
+                blk.anchor_x = backup_anchors_x[i]
+                blk.anchor_y = backup_anchors_y[i]
                 blk.update_position()
+                # Add to field with new position.
+                self.field[blk.anchor_y][blk.anchor_x] = blk
 
                 i += 1
 
