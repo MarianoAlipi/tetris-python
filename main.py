@@ -159,10 +159,39 @@ class Game(Arcade.Window):
 
     # Move a tetrimino (SpriteList).
     def moveTetrimino(self, tetr, x=0, y=0):
+        # Here, the target anchor positions of each block will be stored.
+        # If every block can be moved, the blocks' new anchor_x and y will be
+        # the values in these lists.
+        backup_anchors_x = []
+        backup_anchors_y = []
+
+        # Check if every block can be moved.
         for blk in tetr:
-            blk.anchor_x += x
-            blk.anchor_y += y
+
+            # Target anchor position.
+            new_x = blk.anchor_x + x
+            new_y = blk.anchor_y + y
+
+            # Check the move is inside the game area.
+            if new_x >= 0 and new_x < Const.NUM_COLS and new_y >= 0 and new_y < Const.NUM_ROWS:
+                # Check there isn't already a block in the target position.
+                if self.field[new_y][new_x] == False:
+                    backup_anchors_x.append(new_x)
+                    backup_anchors_y.append(new_y)
+                # One of the blocks cannot move. Exit the function.
+                else:
+                    return
+            # Trying to move outside the game area.
+            else:
+                return
+
+        # All the blocks have been checked and they CAN move.
+        i = 0
+        for blk in tetr:
+            blk.anchor_x = backup_anchors_x[i]
+            blk.anchor_y = backup_anchors_y[i]
             blk.update_position()
+            i += 1
 
     # Rotate a tetrimino (SpriteList).
     def rotateTetrimino(self, tetr, degrees=0):
