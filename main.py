@@ -169,7 +169,7 @@ class Game(Arcade.Window):
 
     # Move a tetrimino (SpriteList).
     def move_tetrimino(self, tetr, x=0, y=0):
-        # Here, the target anchor positions of each block will be stored.
+        # The target anchor positions of each block will be stored in these lists.
         # If every block can be moved, the blocks' new anchor_x and y will be
         # the values in these lists.
         backup_anchors_x = []
@@ -202,6 +202,12 @@ class Game(Arcade.Window):
         is_first = True
         anchor_block = tetr[0]
 
+        # The target anchor positions of each block will be stored in these lists.
+        # If every block can be moved, the blocks' new anchor_x and y will be
+        # the values in these lists.
+        backup_anchors_x = []
+        backup_anchors_y = []
+
         # Left
         if degrees == -90:
             for blk in tetr:
@@ -232,9 +238,30 @@ class Game(Arcade.Window):
                     elif pair[1] > 0:
                         pair = [pair[1], 0]
 
-                blk.anchor_x = anchor_block.anchor_x + pair[0]
-                blk.anchor_y = anchor_block.anchor_y + pair[1]
+                new_x = anchor_block.anchor_x + pair[0]
+                new_y = anchor_block.anchor_y + pair[1]
+
+                if self.check_valid_and_empty(new_x, new_y):
+                    backup_anchors_x.append(new_x)
+                    backup_anchors_y.append(new_y)
+                else:
+                    # Can't move this block.
+                    return
+
+            # If the program reaches this point, every block can be moved.
+            # Move them (skip the first one).
+            i = 0
+            for blk in tetr:
+                if i == 0:
+                    i += 1
+                    continue
+
+                blk.anchor_x = backup_anchors_x[i - 1]
+                blk.anchor_y = backup_anchors_y[i - 1]
                 blk.update_position()
+
+                i += 1
+
         # Right
         elif degrees == 90:
             for blk in tetr:
@@ -265,9 +292,30 @@ class Game(Arcade.Window):
                     elif pair[1] > 0:
                         pair = [-1 * pair[1], 0]
                         
-                blk.anchor_x = anchor_block.anchor_x + pair[0]
-                blk.anchor_y = anchor_block.anchor_y + pair[1]
+                new_x = anchor_block.anchor_x + pair[0]
+                new_y = anchor_block.anchor_y + pair[1]
+
+                if self.check_valid_and_empty(new_x, new_y):
+                    backup_anchors_x.append(new_x)
+                    backup_anchors_y.append(new_y)
+                else:
+                    # Can't move this block.
+                    return
+
+            # If the program reaches this point, every block can be moved.
+            # Move them (skip the first one).
+            i = 0
+            for blk in tetr:
+                if i == 0:
+                    i += 1
+                    continue
+
+                blk.anchor_x = backup_anchors_x[i - 1]
+                blk.anchor_y = backup_anchors_y[i - 1]
                 blk.update_position()
+
+                i += 1
+                
 
 """ Main program """
 def main():
