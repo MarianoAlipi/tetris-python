@@ -84,14 +84,14 @@ class Game(Arcade.Window):
         if self.left_pressed and not self.right_pressed:
             # If it can still move left...
             if self.tetrimino[0].anchor_x - 1 >= 0:
-                self.moveTetrimino(self.tetrimino, -1, 0)
+                self.move_tetrimino(self.tetrimino, -1, 0)
             # Release (reset) key
             self.left_pressed = False
         # Right
         elif self.right_pressed and not self.left_pressed:
             # If it can still move right...
             if self.tetrimino[0].anchor_x + 1 < Const.NUM_COLS:
-                self.moveTetrimino(self.tetrimino, 1, 0)
+                self.move_tetrimino(self.tetrimino, 1, 0)
             # Release (reset) key
             self.right_pressed = False
 
@@ -99,12 +99,12 @@ class Game(Arcade.Window):
         if self.r_pressed:
             # Check it's not the O tetrimino (it can't rotate).
             if self.tetrimino[0].type != tetrimino.Tetrimino.Type.O:
-                self.rotateTetrimino(self.tetrimino, -90)
+                self.rotate_tetrimino(self.tetrimino, -90)
             self.r_pressed = False
 
         # Gravity
         if self.fall_counter >= self.fall_every:
-            self.moveTetrimino(self.tetrimino, 0, 1)
+            self.move_tetrimino(self.tetrimino, 0, 1)
             self.fall_counter = 0
         else:
             self.fall_counter += 1
@@ -168,7 +168,7 @@ class Game(Arcade.Window):
             return
 
     # Move a tetrimino (SpriteList).
-    def moveTetrimino(self, tetr, x=0, y=0):
+    def move_tetrimino(self, tetr, x=0, y=0):
         # Here, the target anchor positions of each block will be stored.
         # If every block can be moved, the blocks' new anchor_x and y will be
         # the values in these lists.
@@ -204,7 +204,7 @@ class Game(Arcade.Window):
             i += 1
 
     # Rotate a tetrimino (SpriteList).
-    def rotateTetrimino(self, tetr, degrees=0):
+    def rotate_tetrimino(self, tetr, degrees=0):
         is_first = True
         anchor_block = tetr[0]
 
