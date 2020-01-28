@@ -187,7 +187,7 @@ class Game(Arcade.Window):
                 backup_anchors_y.append(new_y)
             # One of the blocks cannot move. Exit the function.
             else:
-                return
+                return False
 
         # All the blocks have been checked and they CAN move.
         i = 0
@@ -196,6 +196,8 @@ class Game(Arcade.Window):
             blk.anchor_y = backup_anchors_y[i]
             blk.update_position()
             i += 1
+        
+        return True
 
     # Rotate a tetrimino (SpriteList).
     def rotate_tetrimino(self, tetr, degrees=0):
@@ -246,7 +248,7 @@ class Game(Arcade.Window):
                     backup_anchors_y.append(new_y)
                 else:
                     # Can't move this block.
-                    return
+                    return False
 
             # If the program reaches this point, every block can be moved.
             # Move them (skip the first one).
@@ -261,6 +263,8 @@ class Game(Arcade.Window):
                 blk.update_position()
 
                 i += 1
+
+            return True
 
         # Right
         elif degrees == 90:
@@ -300,7 +304,7 @@ class Game(Arcade.Window):
                     backup_anchors_y.append(new_y)
                 else:
                     # Can't move this block.
-                    return
+                    return False
 
             # If the program reaches this point, every block can be moved.
             # Move them (skip the first one).
@@ -315,6 +319,8 @@ class Game(Arcade.Window):
                 blk.update_position()
 
                 i += 1
+
+            return True
                 
 
 """ Main program """
