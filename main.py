@@ -1,3 +1,12 @@
+"""
+TODO:
+    make rotation look for a free space when it's too tight.
+    
+    Currently this causes the T tetrimino (maybe others) to get
+    stuck at the top if they're rotated right after they appear.
+
+"""
+
 import arcade as Arcade
 
 import block
