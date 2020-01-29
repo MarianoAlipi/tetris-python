@@ -62,7 +62,6 @@ class Game(Arcade.Window):
 
         self.tetrimino = Arcade.SpriteList()
         self.blocks_list = Arcade.SpriteList()
-        self.debug_list = Arcade.ShapeElementList()
 
         self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.S).to_sprite_list()
         self.add_tetrimino_to_field(self.tetrimino)
@@ -135,18 +134,8 @@ class Game(Arcade.Window):
         else:
             self.fall_counter += 1
 
-        count = 0
-        self.debug_list = Arcade.ShapeElementList()
-        for r in range(Const.NUM_ROWS):
-            for c in range(Const.NUM_COLS):
-                if self.field[r][c] != None:
-                    rect = Arcade.create_rectangle_filled(center_x=Const.AREA_LEFT + c * Const.BLOCK_SIZE + Const.BLOCK_SIZE / 2, center_y=Const.AREA_TOP - r * Const.BLOCK_SIZE - Const.BLOCK_SIZE / 2, width=Const.BLOCK_SIZE, height=Const.BLOCK_SIZE, color=(255, 0, 0, 128))
-                    self.debug_list.append(rect)
-                    count += 1
-        print("block count =", count)
-
         # Show FPS
-        # print(1.0 / self.delta * 60)
+        print(1.0 / self.delta * 60)
 
     """ ============ """
     """ || Render ||"""
@@ -162,8 +151,6 @@ class Game(Arcade.Window):
 
         # The blocks already placed
         self.blocks_list.draw()
-
-        self.debug_list.draw()
 
 
     """ =================== """
