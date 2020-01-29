@@ -34,7 +34,8 @@ class Game(Arcade.Window):
 
         # Individual blocks (pieces of tetriminos) in the grid
         self.blocks_list = None
-        
+        self.debug_list = None
+
         # Game area (with grid)
         self.game_area = None
 
@@ -61,6 +62,7 @@ class Game(Arcade.Window):
 
         self.tetrimino = Arcade.SpriteList()
         self.blocks_list = Arcade.SpriteList()
+        self.debug_list = Arcade.ShapeElementList()
 
         self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.S).to_sprite_list()
         self.add_tetrimino_to_field(self.tetrimino)
@@ -74,6 +76,7 @@ class Game(Arcade.Window):
         
         for y in range(Const.AREA_BOTTOM + Const.BLOCK_SIZE, Const.AREA_TOP, Const.BLOCK_SIZE):
             self.game_area.append(Arcade.create_line(Const.AREA_LEFT, y, Const.AREA_RIGHT, y, (128, 128, 128, 128)))
+
     """ ========== """
     """ || Tick || """
     """ ========== """
@@ -132,6 +135,13 @@ class Game(Arcade.Window):
         else:
             self.fall_counter += 1
 
+        self.debug_list = Arcade.ShapeElementList()
+        for r in range(Const.NUM_ROWS):
+            for c in range(Const.NUM_COLS):
+                if self.field[r][c] != None:
+                    rect = Arcade.create_rectangle_filled(center_x=Const.AREA_LEFT + c * Const.BLOCK_SIZE + Const.BLOCK_SIZE / 2, center_y=Const.AREA_TOP - r * Const.BLOCK_SIZE - Const.BLOCK_SIZE / 2, width=Const.BLOCK_SIZE, height=Const.BLOCK_SIZE, color=(255, 0, 0, 128))
+                    self.debug_list.append(rect)
+
         # Show FPS
         print(1.0 / self.delta * 60)
 
@@ -149,6 +159,8 @@ class Game(Arcade.Window):
 
         # The blocks already placed
         self.blocks_list.draw()
+
+        self.debug_list.draw()
 
 
     """ =================== """
