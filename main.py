@@ -114,7 +114,7 @@ class Game(Arcade.Window):
         if self.r_pressed:
             # Check it's not the O tetrimino (it can't rotate).
             if self.tetrimino[0].type != tetrimino.Tetrimino.Type.O:
-                self.rotate_tetrimino(self.tetrimino, -90)
+                self.rotate_tetrimino(self.tetrimino, 90)
             self.r_pressed = False
 
         """ Gravity """
@@ -135,15 +135,18 @@ class Game(Arcade.Window):
         else:
             self.fall_counter += 1
 
+        count = 0
         self.debug_list = Arcade.ShapeElementList()
         for r in range(Const.NUM_ROWS):
             for c in range(Const.NUM_COLS):
                 if self.field[r][c] != None:
                     rect = Arcade.create_rectangle_filled(center_x=Const.AREA_LEFT + c * Const.BLOCK_SIZE + Const.BLOCK_SIZE / 2, center_y=Const.AREA_TOP - r * Const.BLOCK_SIZE - Const.BLOCK_SIZE / 2, width=Const.BLOCK_SIZE, height=Const.BLOCK_SIZE, color=(255, 0, 0, 128))
                     self.debug_list.append(rect)
+                    count += 1
+        print("block count =", count)
 
         # Show FPS
-        print(1.0 / self.delta * 60)
+        # print(1.0 / self.delta * 60)
 
     """ ============ """
     """ || Render ||"""
@@ -241,10 +244,14 @@ class Game(Arcade.Window):
                 return False
 
         # All the blocks have been checked and they CAN move.
-        i = 0
+        # Remove them all from the field.
+        # Separated for loops to avoid erasing a new block.
         for blk in tetr:
             # Remove from field.
             self.field[blk.anchor_y][blk.anchor_x] = None
+
+        i = 0
+        for blk in tetr:
             # Update position values.
             blk.anchor_x = backup_anchors_x[i]
             blk.anchor_y = backup_anchors_y[i]
@@ -307,22 +314,6 @@ class Game(Arcade.Window):
                     # Can't move this block.
                     return False
 
-            # If the program reaches this point, every block can be moved.
-            # Move them (skip the first one).
-            i = 0
-            for blk in tetr:
-                if i == 0:
-                    i += 1
-                    continue
-
-                blk.anchor_x = backup_anchors_x[i - 1]
-                blk.anchor_y = backup_anchors_y[i - 1]
-                blk.update_position()
-
-                i += 1
-
-            return True
-
         # Right
         elif degrees == 90:
             for blk in tetr:
@@ -363,26 +354,36 @@ class Game(Arcade.Window):
                     # Can't move this block.
                     return False
 
-            # If the program reaches this point, every block can be moved.
-            # Move them (skip the first one).
-            i = 0
-            for blk in tetr:
-                if i == 0:
-                    i += 1
-                    continue
+        # If the program reaches this point, every block can be moved.
+        # Move them (skip the first one).
 
-                # Remove from field.
-                self.field[blk.anchor_y][blk.anchor_x] = None
-                # Update position values.
-                blk.anchor_x = backup_anchors_x[i]
-                blk.anchor_y = backup_anchors_y[i]
-                blk.update_position()
-                # Add to field with new position.
-                self.field[blk.anchor_y][blk.anchor_x] = blk
-
+        # Remove them all from the field.
+        # Separated for loops to avoid erasing a new block.
+        i = 0
+        for blk in tetr:
+            if i == 0:
                 i += 1
+                continue
 
-            return True
+            # Remove from field.
+            self.field[blk.anchor_y][blk.anchor_x] = None
+
+        i = 0
+        for blk in tetr:
+            if i == 0:
+                i += 1
+                continue
+
+            # Update position values.
+            blk.anchor_x = backup_anchors_x[i - 1]
+            blk.anchor_y = backup_anchors_y[i - 1]
+            blk.update_position()
+            # Add to field with new position.
+            self.field[blk.anchor_y][blk.anchor_x] = blk
+
+            i += 1
+
+        return True
                 
 
 """ ================== """
