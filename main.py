@@ -62,7 +62,7 @@ class Game(Arcade.Window):
 
         self.tetrimino = Arcade.SpriteList()
         self.blocks_list = Arcade.SpriteList()
-        
+
         # The tallest occupied space by column.
         # The lower the number, the higher the block is on the screen.
         self.max_by_col = self.find_max_by_col()
@@ -137,6 +137,8 @@ class Game(Arcade.Window):
                 # Convert tetrimino to blocks.
                 for blk in self.tetrimino:
                     self.blocks_list.append(blk)
+                # Update maximum height
+                self.max_by_col = self.find_max_by_col()
                 # Create new tetrimino.
                 self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.T).to_sprite_list()
                 self.add_tetrimino_to_field(self.tetrimino)
