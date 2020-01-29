@@ -62,9 +62,14 @@ class Game(Arcade.Window):
 
         self.tetrimino = Arcade.SpriteList()
         self.blocks_list = Arcade.SpriteList()
+        
+        # The tallest occupied space by column.
+        # The lower the number, the higher the block is on the screen.
+        self.max_by_col = self.find_max_by_col()
 
         self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.S).to_sprite_list()
         self.add_tetrimino_to_field(self.tetrimino)
+
 
         # Game area (with grid)
         self.game_area = Arcade.ShapeElementList()
@@ -82,6 +87,11 @@ class Game(Arcade.Window):
     def update(self, delta_time):
         # Normalized delta time
         self.delta = delta_time * 60
+
+        print("Max list: ", end="")
+        for val in self.max_by_col:
+            print(val, end=" ")
+        print()
 
         if self.up_pressed and not self.down_pressed:
             #self.player.change_y = 4
@@ -371,7 +381,24 @@ class Game(Arcade.Window):
             i += 1
 
         return True
-                
+
+    """ Find the tallest occupied point (anchor_y) in the field for every column and return it. """
+    """ Ignore tetrimino passed as optional parameter 'ignore'. """
+    """ This is inneficient. It must be used only to setup. """
+    def find_max_by_col(self, ignore=[]):
+
+        # Make every column's max be below the lowest row (10).
+        by_col = [Const.NUM_ROWS for i in range(Const.NUM_COLS)]
+
+        for y in range(Const.NUM_ROWS):
+            for x in range(Const.NUM_COLS):
+                if self.field[y][x] != None:
+                    if self.field[y][x] not in ignore:
+                        if y < by_col[x]:
+                            by_col[x] = y
+
+        return by_col
+            
 
 """ ================== """
 """ || Main program || """
