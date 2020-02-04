@@ -137,6 +137,8 @@ class Game(Arcade.Window):
                 # Convert tetrimino to blocks.
                 for blk in self.tetrimino:
                     self.blocks_list.append(blk)
+                # Clear full rows
+                self.clear_rows(self.check_full_rows(tetr=self.tetrimino))
                 # Update maximum height
                 self.max_by_col = self.find_max_by_col()
                 # Create new tetrimino.
@@ -427,7 +429,7 @@ class Game(Arcade.Window):
         # Return the full rows.
         return full_rows
 
-    """ Remove all the blocks in the rows and move everything above them down. Ignore the blocks of the current tetrimino 'tetr'. """
+    """ Remove all the blocks in the rows 'rows' and move everything above them down. """
     def clear_rows(self, rows=[], tetr=[]):
 
         # Sort the rows to remove for easier handling.
@@ -438,7 +440,7 @@ class Game(Arcade.Window):
             for col in range(Const.NUM_COLS):
                 if self.field[row][col] == None:
                     continue
-                elif self.field[row][col] not in tetr:
+                elif self.field[row][col]:
                     # This could be improved.
                     # It would be necessary to keep track of every block in blocks_list
                     # to be able to remove them in constant time.
@@ -455,27 +457,26 @@ class Game(Arcade.Window):
             # The next row in the list. -1 if there's not a next row.
             next_row_in_list = rows[i + 1] if i + 1 < len(rows) else -1
 
-            # If this is not the last row in the list...
-            if next_row_in_list != -1:
-                # If the following row is the one directly above this one...
-                if next_row_in_list == rows[i] - 1:
-                    # Increase offset by 1 (the next row will move everything by 'offset' places down).
-                    offset += 1
-                    continue
-                # If the following row is NOT the one directly above this one...
-                else:
-                    # For every row, starting from the row above the current row, to the row below the following row in the list...
-                    # Going from the bottom to the top.
-                    for y in range(rows[i] - 1, next_row_in_list, -1):
-                        for x in range(Const.NUM_COLS):
-                            # Move the block to the target position.
-                            self.field[y + offset][x] = self.field[y][x]
-                            # Update the anchor_y of the moved blocks.
-                            if self.field[y + offset][x] != None:
-                                self.field[y + offset][x].anchor_y = y + offset
+            # If the following row is the one directly above this one...
+            if next_row_in_list == rows[i] - 1:
+                # Increase offset by 1 (the next row will move everything by 'offset' places down).
+                offset += 1
+                continue
+            # If the following row is NOT the one directly above this one...
+            else:
+                # For every row, starting from the row above the current row, to the row below the following row in the list...
+                # Going from the bottom to the top.
+                for y in range(rows[i] - 1, next_row_in_list, -1):
+                    for x in range(Const.NUM_COLS):
+                        # Move the block to the target position.
+                        self.field[y + offset][x] = self.field[y][x]
+                        # Update the anchor_y of the moved blocks.
+                        if self.field[y + offset][x] != None:
+                            self.field[y + offset][x].anchor_y = y + offset
+                            self.field[y + offset][x].update_position()
 
-                    # The rows have been moved. Reset offset.
-                    offset = 1
+                # The rows have been moved. Reset offset.
+                offset = 1
 
 
 
