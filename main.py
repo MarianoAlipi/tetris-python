@@ -435,6 +435,9 @@ class Game(Arcade.Window):
                 if self.field[row][col] == None:
                     continue
                 elif self.field[row][col] not in tetr:
+                    # This could be improved.
+                    # It would be necessary to keep track of every block in blocks_list
+                    # to be able to remove them in constant time.
                     self.blocks_list.remove(self.field[row][col])
                     self.field[row][col] = None
                 
@@ -442,8 +445,7 @@ class Game(Arcade.Window):
         # WIP #
         # WIP #
         # Move everything down
-
-            
+                  
 
 """ ================== """
 """ || Main program || """
