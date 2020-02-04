@@ -427,6 +427,19 @@ class Game(Arcade.Window):
         # Return the full rows.
         return full_rows
 
+    """ Remove all the blocks in the rows and move everything above them down. Ignore the blocks of the current tetrimino 'tetr'. """
+    def clear_rows(self, rows=[], tetr=[]):
+
+        for row in rows:
+            for col in range(Const.NUM_COLS):
+                if self.field[row][col] not in tetr:
+                    self.field[row][col] = None
+                
+        # WIP #
+        # WIP #
+        # WIP #
+        # Move everything down
+
             
 
 """ ================== """
