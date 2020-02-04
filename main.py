@@ -52,7 +52,7 @@ class Game(Arcade.Window):
         
         # Fall speed (move down by one block every # frames)
         # Default: 50
-        self.fall_every = 50
+        self.fall_every = 20
         self.fall_counter = 0
 
     """ ================ """
@@ -432,7 +432,10 @@ class Game(Arcade.Window):
 
         for row in rows:
             for col in range(Const.NUM_COLS):
-                if self.field[row][col] not in tetr:
+                if self.field[row][col] == None:
+                    continue
+                elif self.field[row][col] not in tetr:
+                    self.blocks_list.remove(self.field[row][col])
                     self.field[row][col] = None
                 
         # WIP #
