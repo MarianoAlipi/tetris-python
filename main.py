@@ -430,6 +430,10 @@ class Game(Arcade.Window):
     """ Remove all the blocks in the rows and move everything above them down. Ignore the blocks of the current tetrimino 'tetr'. """
     def clear_rows(self, rows=[], tetr=[]):
 
+        # Sort the rows to remove for easier handling.
+        # e.g. [19 18 16]
+        rows.sort(reverse=True)
+
         for row in rows:
             for col in range(Const.NUM_COLS):
                 if self.field[row][col] == None:
@@ -440,12 +444,40 @@ class Game(Arcade.Window):
                     # to be able to remove them in constant time.
                     self.blocks_list.remove(self.field[row][col])
                     self.field[row][col] = None
-                
-        # WIP #
-        # WIP #
-        # WIP #
-        # Move everything down
-                  
+
+        # Move everything above each deleted row down.
+
+        # How many positions to move down.
+        offset = 1
+
+        for i in range(len(rows)):
+
+            # The next row in the list. -1 if there's not a next row.
+            next_row_in_list = rows[i + 1] if i + 1 < len(rows) else -1
+
+            # If this is not the last row in the list...
+            if next_row_in_list != -1:
+                # If the following row is the one directly above this one...
+                if next_row_in_list == rows[i] - 1:
+                    # Increase offset by 1 (the next row will move everything by 'offset' places down).
+                    offset += 1
+                    continue
+                # If the following row is NOT the one directly above this one...
+                else:
+                    # For every row, starting from the row above the current row, to the row below the following row in the list...
+                    # Going from the bottom to the top.
+                    for y in range(rows[i] - 1, next_row_in_list, -1):
+                        for x in range(Const.NUM_COLS):
+                            # Move the block to the target position.
+                            self.field[y + offset][x] = self.field[y][x]
+                            # Update the anchor_y of the moved blocks.
+                            if self.field[y + offset][x] != None:
+                                self.field[y + offset][x].anchor_y = y + offset
+
+                    # The rows have been moved. Reset offset.
+                    offset = 1
+
+
 
 """ ================== """
 """ || Main program || """
