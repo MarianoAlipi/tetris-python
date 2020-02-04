@@ -401,21 +401,32 @@ class Game(Arcade.Window):
 
         return by_col
 
-    """ UNFINISHED """
-    """ UNFINISHED """
-    """ UNFINISHED """
-    """ UNFINISHED """
-    """ UNFINISHED """
     """ Check the rows a tetrimino is in (ideally just as it lands) for fully occupied rows. """
     def check_full_rows(self, tetr=[]):
 
         rows = []
+        full_rows = []
 
+        # Add the rows affected by the tetrimino to the list.
         for blk in tetr:
             if blk.anchor_y not in rows:
                 rows.append(blk.anchor_y)
 
-        # Check if row is full, return list with full rows
+        # Check if each row is full.
+        for row in rows:
+            is_full = True
+
+            for i in range(Const.NUM_COLS):
+                if self.field[row][i] == None:
+                    is_full = False
+                    break
+            
+            if is_full:
+                full_rows.append(row)
+
+        # Return the full rows.
+        return full_rows
+
             
 
 """ ================== """
