@@ -12,7 +12,8 @@ import arcade as Arcade
 import block
 import constants as Const
 import tetrimino
-
+from random import shuffle
+import queue
 
 class Game(Arcade.Window):
     
@@ -31,6 +32,9 @@ class Game(Arcade.Window):
         # Player (the current tetrimino)
         # tetrimino is a Tetrimino object converted to sprite_list.
         self.tetrimino = None
+
+        # The queue for the upcoming tetriminos.
+        self.tetrimino_queue = None
 
         # Individual blocks (pieces of tetriminos) in the grid
         self.blocks_list = None
@@ -67,7 +71,10 @@ class Game(Arcade.Window):
         # The lower the number, the higher the block is on the screen.
         self.max_by_col = self.find_max_by_col()
 
-        self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.S).to_sprite_list()
+        # Generate first queue.
+        self.tetrimino_queue = self.generate_queue()
+
+        self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type[self.tetrimino_queue.get()]).to_sprite_list()
         self.add_tetrimino_to_field(self.tetrimino)
 
 
@@ -87,11 +94,12 @@ class Game(Arcade.Window):
     def update(self, delta_time):
         # Normalized delta time
         self.delta = delta_time * 60
-
+        """
         print("Max list: ", end="")
         for val in self.max_by_col:
             print(val, end=" ")
         print()
+        """
 
         if self.up_pressed and not self.down_pressed:
             #self.player.change_y = 4
@@ -137,19 +145,26 @@ class Game(Arcade.Window):
                 # Convert tetrimino to blocks.
                 for blk in self.tetrimino:
                     self.blocks_list.append(blk)
+
                 # Clear full rows
                 self.clear_rows(self.check_full_rows(tetr=self.tetrimino))
+
                 # Update maximum height
                 self.max_by_col = self.find_max_by_col()
+
                 # Create new tetrimino.
-                self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type.T).to_sprite_list()
+                # If queue is empty, generate new queue.
+                if self.tetrimino_queue.empty():
+                    self.tetrimino_queue = self.generate_queue()
+                # Create and add tetrimino.
+                self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type[self.tetrimino_queue.get()]).to_sprite_list()
                 self.add_tetrimino_to_field(self.tetrimino)
             self.fall_counter = 0
         else:
             self.fall_counter += 1
 
         # Show FPS
-        print(1.0 / self.delta * 60)
+        # print(1.0 / self.delta * 60)
 
     """ ============ """
     """ || Render ||"""
@@ -478,7 +493,21 @@ class Game(Arcade.Window):
                 # The rows have been moved. Reset offset.
                 offset = 1
 
+    """ Generate queue of the upcoming tetriminos. """
+    def generate_queue(self):
+        
+        types = []
+        for type in tetrimino.Tetrimino.Type:
+            types.append(type.value)
 
+        shuffle(types)
+
+        tetr_queue = queue.Queue(len(tetrimino.Tetrimino.Type))
+        for val in types:
+            tetr_queue.put(val)
+            print(val)
+
+        return tetr_queue
 
 """ ================== """
 """ || Main program || """
