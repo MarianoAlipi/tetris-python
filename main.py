@@ -505,7 +505,6 @@ class Game(Arcade.Window):
         tetr_queue = queue.Queue(len(tetrimino.Tetrimino.Type))
         for val in types:
             tetr_queue.put(val)
-            print(val)
 
         return tetr_queue
 
