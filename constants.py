@@ -15,7 +15,7 @@ RIGHT_X = SCREEN_WIDTH
 NUM_ROWS = 20
 NUM_COLS = 10
 
-# Size (wdith) of a single block (a piece of a tetrimino).
+# Size (width) of a single block (a piece of a tetrimino).
 BLOCK_SIZE = 22
 
 # The limits of the playing area (where blocks appear).

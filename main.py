@@ -64,6 +64,7 @@ class Game(Arcade.Window):
     """ ================ """
     def setup(self):
 
+        # Create the sprite lists.
         self.tetrimino = Arcade.SpriteList()
         self.blocks_list = Arcade.SpriteList()
 
@@ -71,12 +72,12 @@ class Game(Arcade.Window):
         # The lower the number, the higher the block is on the screen.
         self.max_by_col = self.find_max_by_col()
 
-        # Generate first queue.
+        # Generate first queue of tetriminos.
         self.tetrimino_queue = self.generate_queue()
 
+        # Get the first tetrimino and add it to the field.
         self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type[self.tetrimino_queue.get()]).to_sprite_list()
         self.add_tetrimino_to_field(self.tetrimino)
-
 
         # Game area (with grid)
         self.game_area = Arcade.ShapeElementList()
