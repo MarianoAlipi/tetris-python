@@ -9,5 +9,5 @@ To install:
 ##### Mac / Linux
     pip3 install arcade
     
-#### Running
+### Running
 * Run main.py.
