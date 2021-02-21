@@ -20,9 +20,9 @@ BLOCK_SIZE = 22
 
 # The limits of the playing area (where blocks appear).
 AREA_LEFT = 10
-AREA_RIGHT = AREA_LEFT + BLOCK_SIZE * 10
+AREA_RIGHT = AREA_LEFT + BLOCK_SIZE * NUM_COLS
 AREA_BOTTOM = 10
-AREA_TOP = AREA_BOTTOM + BLOCK_SIZE * 20
+AREA_TOP = AREA_BOTTOM + BLOCK_SIZE * NUM_ROWS
 
 # Valid key bindings.
 UP_KEYS = [Arcade.key.UP, Arcade.key.W]

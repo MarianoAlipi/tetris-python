@@ -57,7 +57,7 @@ class Game(Arcade.Window):
         # Fall speed (move down by one block every # frames)
         # Default: 50
         self.fall_every = 20
-        self.fall_counter = 0
+        self.fall_frames_counter = 0
 
     """ ================ """
     """ || Game setup || """
@@ -136,7 +136,7 @@ class Game(Arcade.Window):
             self.r_pressed = False
 
         """ Gravity """
-        if self.fall_counter >= self.fall_every:
+        if self.fall_frames_counter >= self.fall_every:
             # Attempt to move down
             if self.move_tetrimino(self.tetrimino, 0, 1):
                 # Success
@@ -160,9 +160,9 @@ class Game(Arcade.Window):
                 # Create and add tetrimino.
                 self.tetrimino = tetrimino.Tetrimino(type=tetrimino.Tetrimino.Type[self.tetrimino_queue.get()]).to_sprite_list()
                 self.add_tetrimino_to_field(self.tetrimino)
-            self.fall_counter = 0
+            self.fall_frames_counter = 0
         else:
-            self.fall_counter += 1
+            self.fall_frames_counter += 1
 
         # Show FPS
         # print(1.0 / self.delta * 60)
