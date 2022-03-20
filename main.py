@@ -96,21 +96,12 @@ class Game(Arcade.Window):
         # Normalized delta time
         self.delta = delta_time * 60
         """
+        # Print the maximum height of each column
         print("Max list: ", end="")
         for val in self.max_by_col:
             print(val, end=" ")
         print()
         """
-
-        if self.up_pressed and not self.down_pressed:
-            #self.player.change_y = 4
-            pass
-        elif self.down_pressed and not self.up_pressed:
-            #self.player.change_y = -4
-            pass
-        else:
-            #self.player.change_y = 0
-            pass
 
         """ Horizontal movement """
         # Left
