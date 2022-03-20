@@ -3,8 +3,6 @@
 import arcade as Arcade
 
 import constants as Const
-import tetrimino
-
 
 class Block(Arcade.Sprite):
 
