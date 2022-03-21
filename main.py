@@ -27,6 +27,7 @@ class Game(Arcade.Window):
         Arcade.set_background_color(Arcade.color.BLACK)
 
         # Field
+        # A matrix of 'block' objects (empty cells are 'None').
         self.field = [ [None for i in range(Const.NUM_COLS)] for j in range(Const.NUM_ROWS) ]
         
         # Player (the current tetrimino)
@@ -38,9 +39,9 @@ class Game(Arcade.Window):
 
         # Individual blocks (pieces of tetriminos) in the grid
         self.blocks_list = None
-        self.debug_list = None
 
         # Game area (with grid)
+        # Required for rendering with the Arcade library.
         self.game_area = None
 
         # Normalized delta time
@@ -439,29 +440,29 @@ class Game(Arcade.Window):
     """ Remove all the blocks in the rows 'rows' and move everything above them down. """
     def clear_rows(self, rows=[], tetr=[]):
 
-        # Sort the rows to remove for easier handling.
+        # Sort the list of rows to remove for easier handling.
         # e.g. [19 18 16]
         rows.sort(reverse=True)
 
+        # For each row to remove...
         for row in rows:
+            # Remove every block (column).
             for col in range(Const.NUM_COLS):
                 if self.field[row][col] == None:
                     continue
                 elif self.field[row][col]:
-                    # This could be improved.
-                    # It would be necessary to keep track of every block in blocks_list
-                    # to be able to remove them in constant time.
                     self.blocks_list.remove(self.field[row][col])
                     self.field[row][col] = None
 
         # Move everything above each deleted row down.
-
-        # How many positions to move down.
-        offset = 1
-
         for i in range(len(rows)):
+            
+            # How many positions to move down.
+            # (Re)set offset.
+            offset = 1
 
-            # The next row in the list. -1 if there's not a next row.
+            # The next row in the list.
+            # -1 if this is the last row.
             next_row_in_list = rows[i + 1] if i + 1 < len(rows) else -1
 
             # If the following row is the one directly above this one...
@@ -482,18 +483,18 @@ class Game(Arcade.Window):
                             self.field[y + offset][x].anchor_y = y + offset
                             self.field[y + offset][x].update_position()
 
-                # The rows have been moved. Reset offset.
-                offset = 1
-
     """ Generate queue of the upcoming tetriminos. """
     def generate_queue(self):
         
+        # Add one tetrimino of each type to the list.
         types = []
         for type in tetrimino.Tetrimino.Type:
             types.append(type.value)
 
+        # Shuffle the list.
         shuffle(types)
 
+        # Convert the list into a queue.
         tetr_queue = queue.Queue(len(tetrimino.Tetrimino.Type))
         for val in types:
             tetr_queue.put(val)
