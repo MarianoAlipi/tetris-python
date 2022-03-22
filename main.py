@@ -54,6 +54,16 @@ class Game(Arcade.Window):
         self.right_pressed = False
         self.space_pressed = False
         self.r_pressed = False
+
+        # Number of frames to detect a held key
+        # as another key press
+        self.key_down_cooldown = 6
+
+        # Counter of how many frames the key is down
+        self.held_key_frames_counter = 0
+
+        # Name of the held key
+        self.held_key_name = ''
         
         # Fall speed (move down by one block every # frames)
         # Default: 50
@@ -107,18 +117,48 @@ class Game(Arcade.Window):
         """ Horizontal movement """
         # Left
         if self.left_pressed and not self.right_pressed:
-            # If it can still move left...
-            if self.tetrimino[0].anchor_x - 1 >= 0:
-                self.move_tetrimino(self.tetrimino, -1, 0)
-            # Release (reset) key
-            self.left_pressed = False
+
+            # Check if it wasn't pressed last frame
+            # (i.e. 'new' key pressed)
+            if self.held_key_name != 'left':
+                self.held_key_name = 'left'
+                self.held_key_frames_counter = 0
+
+            if self.held_key_frames_counter > self.key_down_cooldown:
+                self.held_key_frames_counter = 0
+
+            if self.held_key_frames_counter == 0:
+                # If it can still move left...
+                if self.tetrimino[0].anchor_x - 1 >= 0:
+                    self.move_tetrimino(self.tetrimino, -1, 0)
+                # Release (reset) key
+                # self.left_pressed = False
+
+            self.held_key_frames_counter += 1
         # Right
         elif self.right_pressed and not self.left_pressed:
-            # If it can still move right...
-            if self.tetrimino[0].anchor_x + 1 < Const.NUM_COLS:
-                self.move_tetrimino(self.tetrimino, 1, 0)
-            # Release (reset) key
-            self.right_pressed = False
+
+             # Check if it wasn't pressed last frame
+            # (i.e. 'new' key pressed)
+            if self.held_key_name != 'right':
+                self.held_key_name = 'right'
+                self.held_key_frames_counter = 0
+
+            if self.held_key_frames_counter > self.key_down_cooldown:
+                self.held_key_frames_counter = 0
+
+            if self.held_key_frames_counter == 0:
+                # If it can still move right...
+                if self.tetrimino[0].anchor_x + 1 < Const.NUM_COLS:
+                    self.move_tetrimino(self.tetrimino, 1, 0)
+                # Release (reset) key
+                # self.right_pressed = False
+
+            self.held_key_frames_counter += 1
+        # No direction pressed (stop counting 'held' frames)
+        else:
+            self.held_key_name = ''
+            self.held_key_frames_counter = 0
 
         """ Rotation """
         if self.r_pressed:
@@ -154,7 +194,7 @@ class Game(Arcade.Window):
                 self.add_tetrimino_to_field(self.tetrimino)
             self.fall_frames_counter = 0
         else:
-            self.fall_frames_counter += 1
+            self.fall_frames_counter += 1 if not self.down_pressed else 10
 
         # Show FPS
         # print(1.0 / self.delta * 60)
@@ -222,7 +262,7 @@ class Game(Arcade.Window):
         else:
             return False
 
-    """ Add the tetrimino's blocks to the field matrix. """
+    """ Add the current tetrimino's blocks to the field matrix. """
     def add_tetrimino_to_field(self, tetr):
         for blk in tetr:
             x = blk.anchor_x
