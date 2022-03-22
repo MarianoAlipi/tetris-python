@@ -494,12 +494,11 @@ class Game(Arcade.Window):
                     self.blocks_list.remove(self.field[row][col])
                     self.field[row][col] = None
 
+        # How many positions to move down.
+        offset = 1
+
         # Move everything above each deleted row down.
         for i in range(len(rows)):
-            
-            # How many positions to move down.
-            # (Re)set offset.
-            offset = 1
 
             # The next row in the list.
             # -1 if this is the last row.
@@ -522,6 +521,9 @@ class Game(Arcade.Window):
                         if self.field[y + offset][x] != None:
                             self.field[y + offset][x].anchor_y = y + offset
                             self.field[y + offset][x].update_position()
+
+                # The rows have been removed. Reset offset.
+                offset = 0
 
     """ Generate queue of the upcoming tetriminos. """
     def generate_queue(self):
